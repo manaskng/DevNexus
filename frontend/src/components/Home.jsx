@@ -3,7 +3,7 @@ import axios from "axios";
 import NoteModel from "./NoteModel";
 import NoteCard from "./NoteCard";
 import { useLocation } from "react-router-dom";
-import { FiPlus } from "react-icons/fi";
+import { FiPlus, FiSearch } from "react-icons/fi";
 
 function Home() {
   const [notes, setNotes] = useState([]);
@@ -38,7 +38,6 @@ function Home() {
             )
           : data;
         
-        // CHANGED: Update sorting to handle pinned notes on initial load
         const sortedNotes = filteredNotes.sort((a, b) => b.isPinned - a.isPinned || new Date(b.updatedAt) - new Date(a.updatedAt));
 
         setNotes(sortedNotes);
@@ -62,11 +61,10 @@ function Home() {
     } else {
       newNotes = [savedNote, ...notes];
     }
-    // Re-sort after saving to maintain order
     newNotes.sort((a, b) => b.isPinned - a.isPinned || new Date(b.updatedAt) - new Date(a.updatedAt));
     setNotes(newNotes);
     setEditNote(null);
-    setIsModalOpen(false); // Close modal after saving
+    setIsModalOpen(false);
   };
 
   const handleDelete = async (id) => {
@@ -82,13 +80,12 @@ function Home() {
     }
   };
 
-  // ADDED: The new function to handle pinning
   const handlePinNote = async (id) => {
     try {
       const token = localStorage.getItem("token");
       const { data: updatedNote } = await axios.put(
         `${API_URL}/api/notes/${id}/pin`,
-        {}, // No body needed for a toggle
+        {}, 
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -96,7 +93,6 @@ function Home() {
         note._id === updatedNote._id ? updatedNote : note
       );
 
-      // Re-sort the array on the frontend for an instant UI update
       updatedNotes.sort((a, b) => b.isPinned - a.isPinned || new Date(b.updatedAt) - new Date(a.updatedAt));
       
       setNotes(updatedNotes);
@@ -120,33 +116,60 @@ function Home() {
         onSave={handleSaveNote}
       />
 
+      {/* Floating Action Button */}
       <button
         onClick={() => {
           setEditNote(null);
           setIsModalOpen(true);
         }}
-        className="fixed bottom-8 right-8 w-16 h-16 bg-blue-600 text-white text-3xl rounded-full shadow-lg hover:bg-blue-700 flex items-center justify-center transition-transform hover:scale-110"
+        className="fixed bottom-8 right-8 w-16 h-16 bg-blue-600 text-white text-3xl rounded-full shadow-lg hover:bg-blue-700 flex items-center justify-center transition-transform hover:scale-110 z-50"
         aria-label="Create new note"
       >
         <FiPlus />
       </button>
 
+      {/* Header & Search */}
+      <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">My Notes</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">
+            {notes.length} notes found
+          </p>
+        </div>
+        
+        {/* Search Bar - Hidden here if Navbar search is used, but kept for standalone support */}
+        {/* If you use the Navbar search, you might want to remove this block or keep it as local filter */}
+        {/* I'll apply styles just in case you keep it */}
+        <div className="flex w-full md:w-auto gap-3">
+            <div className="relative flex-1 md:w-64">
+                <FiSearch className="absolute left-3 top-3 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Filter notes..."
+                  // NOTE: 'search' state logic is usually driven by URL params in this component
+                  // but kept as is from your provided code
+                  className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-[#1e293b] border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm placeholder-gray-400"
+                />
+            </div>
+        </div>
+      </div>
+
       {notes.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
           {notes.map((note) => (
             <NoteCard
               key={note._id}
               note={note}
               onEdit={handleEdit}
               onDelete={handleDelete}
-              onPin={handlePinNote} // ADDED: Pass the function as a prop
+              onPin={handlePinNote}
             />
           ))}
         </div>
       ) : (
-        <div className="text-center text-gray-500 mt-16">
-          <h2 className="text-2xl font-semibold">No notes yet!</h2>
-          <p className="mt-2">Click the '+' button to create your first note.</p>
+        <div className="flex-1 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 bg-slate-50 dark:bg-white/5 rounded-2xl border-2 border-dashed border-gray-200 dark:border-white/10 m-4 py-16">
+          <h2 className="text-2xl font-semibold text-gray-500 dark:text-gray-400">No notes yet!</h2>
+          <p className="mt-2 text-sm">Click the + button to create your first note.</p>
         </div>
       )}
     </div>

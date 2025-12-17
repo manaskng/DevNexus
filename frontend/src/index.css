@@ -1,5 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@import "tailwindcss";
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-slate-700 rounded-full;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-slate-600;
+}
+
+/* Link Styles */
 .prose a {
   @apply text-blue-600 font-semibold hover:underline;
+}
+
+/* Smooth Theme Transition */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
 }

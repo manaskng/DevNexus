@@ -2,8 +2,8 @@ import Note from "../models/Note.js";
 import express from "express";
 const router = express.Router();
 import { protect } from './../middlewares/auth.js';
-import DOMPurify from 'dompurify'; // ADDED: For sanitizing HTML
-import { JSDOM } from 'jsdom';    // ADDED: To provide a window for DOMPurify in Node.js
+import DOMPurify from 'dompurify'; 
+import { JSDOM } from 'jsdom';    
 
 // Create a sanitizing function instance
 const window = new JSDOM('').window;

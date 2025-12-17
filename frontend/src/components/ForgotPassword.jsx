@@ -1,14 +1,12 @@
-// src/components/ForgotPassword.jsx
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { FiMail, FiArrowLeft } from "react-icons/fi";
+import { FiMail, FiArrowLeft, FiUnlock } from "react-icons/fi";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [message, setMessage] = useState(""); // For success message
+  const [message, setMessage] = useState("");
   const API_URL = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e) => {
@@ -24,35 +22,45 @@ function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-100 px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">Forgot Password</h2>
-        <p className="text-center text-gray-500 mb-8">Enter your email to get a reset link.</p>
+    <div className="min-h-screen flex items-center justify-center bg-[#020617] relative px-4 overflow-hidden">
+      
+      <div className="absolute inset-0 z-0">
+         <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f46e50a_1px,transparent_1px),linear-gradient(to_bottom,#4f46e50a_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+      </div>
 
-        {error && <p className="text-red-500 text-center mb-4 bg-red-100 p-3 rounded-lg">{error}</p>}
-        {message && <p className="text-green-600 text-center mb-4 bg-green-100 p-3 rounded-lg">{message}</p>}
+      <div className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-8 relative z-10">
+        
+        <div className="text-center mb-8">
+           <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-purple-500/20 mb-4">
+              <FiUnlock className="text-purple-400 text-xl" />
+           </div>
+           <h2 className="text-2xl font-bold text-white mb-2">Forgot Password</h2>
+           <p className="text-gray-400">Enter your email to receive a reset link.</p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="relative">
-            <FiMail className="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400" />
+        {error && <p className="text-red-400 text-sm text-center mb-6 bg-red-500/10 border border-red-500/20 p-3 rounded-lg">{error}</p>}
+        {message && <p className="text-green-400 text-sm text-center mb-6 bg-green-500/10 border border-green-500/20 p-3 rounded-lg">{message}</p>}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="relative group">
+            <FiMail className="absolute top-3.5 left-4 text-gray-500 group-focus-within:text-purple-400 transition-colors" />
             <input
               type="email" value={email} onChange={(e) => setEmail(e.target.value)}
               required placeholder="Your Email Address"
-              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              className="w-full pl-12 pr-4 py-3 bg-[#0f172a]/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg shadow-md transition-all duration-300 transform hover:scale-[1.02] active:scale-95"
+            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold py-3 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] active:scale-95"
           >
             Send Reset Link
           </button>
         </form>
 
-        <div className="mt-6 text-center">
-          <Link to="/login" className="flex items-center justify-center text-sm font-medium text-gray-600 hover:text-blue-600">
-            <FiArrowLeft className="mr-2" />
-            Back to Login
+        <div className="mt-8 text-center">
+          <Link to="/login" className="inline-flex items-center text-sm font-bold text-gray-400 hover:text-white transition-colors">
+            <FiArrowLeft className="mr-2" /> Back to Login
           </Link>
         </div>
       </div>

@@ -1,40 +1,40 @@
-// src/App.jsx
-
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider } from "./context/ThemeContext"; 
 import Navbar from "./components/Navbar";
 import Login from "./components/Login";
-import Home from "./components/Home";
 import Register from "./components/Register";
-import axios from "axios";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import LandingPage from "./components/LandingPage";
-import SplashScreen from "./components/SplashScreen"; // 1. Import the new component
+import SplashScreen from "./components/SplashScreen";
+import Dashboard from "./components/Dashboard";
+import axios from "axios";
 
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  // ... (keep your existing useEffect logic)
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem("token");
-        // Add a small artificial delay to see the splash screen
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        if (!token) return;
+        // Simulated delay for splash screen effect
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        if (!token) {
+          setLoading(false);
+          return;
+        }
 
         const { data } = await axios.get(`${API_URL}/api/users/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
         setUser(data);
       } catch (error) {
         localStorage.removeItem("token");
+        setUser(null);
       } finally {
         setLoading(false);
       }
@@ -42,37 +42,30 @@ function App() {
     fetchUser();
   }, [API_URL]);
 
-  // 2. Replace the old loading div with the SplashScreen component
-  if (loading) {
-    return <SplashScreen />;
-  }
+  if (loading) return <SplashScreen />;
 
   return (
-    // ... (the rest of your return statement remains the same)
-    <div className="bg-slate-100 min-h-screen">
-      {user && <Navbar user={user} setUser={setUser} />}
-      <Routes>
-        <Route
-          path="/"
-          element={user ? <Home /> : <Navigate to="/welcome" />}
-        />
-        <Route path="/welcome" element={user ? <Navigate to="/" /> : <LandingPage />} />
+    <ThemeProvider>
+      <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-white transition-colors duration-300 overflow-hidden">
+        {user && <Navbar user={user} setUser={setUser} />}
         
-        <Route
-          path="/login"
-          element={user ? <Navigate to="/" /> : <Login setUser={setUser} />}
-        />
-        <Route
-          path="/register"
-          element={user ? <Navigate to="/" /> : <Register setUser={setUser} />}
-        />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route
-          path="/reset-password/:id/:token"
-          element={<ResetPassword />}
-        />
-      </Routes>
-    </div>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/welcome" element={!user ? <LandingPage /> : <Navigate to="/" />} />
+          <Route path="/login" element={!user ? <Login setUser={setUser} /> : <Navigate to="/" />} />
+          <Route path="/register" element={!user ? <Register setUser={setUser} /> : <Navigate to="/" />} />
+          <Route path="/forgot-password" element={!user ? <ForgotPassword /> : <Navigate to="/" />} />
+          <Route path="/reset-password/:token" element={!user ? <ResetPassword /> : <Navigate to="/" />} />
+
+          {/* Protected Dashboard Route - Handles sub-routes internally */}
+          {user ? (
+            <Route path="/*" element={<Dashboard />} />
+          ) : (
+            <Route path="/*" element={<Navigate to="/welcome" />} />
+          )}
+        </Routes>
+      </div>
+    </ThemeProvider>
   );
 }
 

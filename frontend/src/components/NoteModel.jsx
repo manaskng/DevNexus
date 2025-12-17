@@ -1,28 +1,28 @@
-// src/components/NoteModel.jsx
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import RichTextEditor from "./RichTextEditor"; 
+import RichTextEditor from "./RichTextEditor";
+import { FiX } from "react-icons/fi";
 
 function NoteModel({ isOpen, onClose, note, onSave }) {
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState(""); 
+  const [description, setDescription] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setTitle(note ? note.title : "");
-      // Use existing description or default to an empty paragraph for a new note
-      setDescription(note ? note.description : "<p></p>");
+      setDescription(note ? note.description : "");
       setError("");
     }
   }, [isOpen, note]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const payload = { title, description };
+      const payload = { title, description }; // No tags logic here
       const config = { headers: { Authorization: `Bearer ${token}` } };
       const baseURL = import.meta.env.VITE_API_URL;
 
@@ -36,51 +36,66 @@ function NoteModel({ isOpen, onClose, note, onSave }) {
       }
 
       onSave(savedNote);
-      onClose(); // This was missing in your original code, but is good to have
+      onClose();
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to save note. Please try again.");
+      setError(err.response?.data?.message || "Failed to save note.");
+    } finally {
+      setLoading(false);
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      {/* Increased the max-width to give the editor more space */}
-      <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
-          {note ? "Edit Note" : "Create a New Note"}
-        </h2>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm animate-fade-in">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[90vh] overflow-hidden">
+        
+        {/* Header */}
+        <div className="p-5 border-b flex justify-between items-center bg-gray-50/80">
+           <h2 className="text-xl font-bold text-gray-800">
+             {note ? "Edit Note" : "Create New Note"}
+           </h2>
+           <button 
+             onClick={onClose} 
+             className="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-200 transition-colors"
+           >
+             <FiX size={24}/>
+           </button>
+        </div>
+
+        {error && <div className="bg-red-50 text-red-500 px-6 py-3 text-sm">{error}</div>}
+
+        <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden p-6 space-y-5">
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Title"
+            placeholder="Note Title"
             required
-            className="w-full px-4 py-2 bg-slate-100 text-gray-800 border-2 border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-3 bg-slate-50 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 font-bold text-lg placeholder-gray-400 transition-all"
           />
           
-          {/* 2. Replace the old <textarea> with our new RichTextEditor component */}
-          <RichTextEditor
-            content={description}
-            onChange={(newContent) => setDescription(newContent)}
-          />
+          <div className="flex-1 overflow-y-auto border border-gray-200 rounded-lg focus-within:ring-2 focus-within:ring-blue-500/20 transition-all bg-white">
+            <RichTextEditor
+              content={description}
+              onChange={(newContent) => setDescription(newContent)}
+            />
+          </div>
 
-          <div className="flex justify-end space-x-3">
+          <div className="flex justify-end space-x-3 pt-2">
             <button
               onClick={onClose}
               type="button"
-              className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300"
+              className="px-5 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              disabled={loading}
+              className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
-              {note ? "Update Note" : "Create Note"}
+              {loading ? "Saving..." : (note ? "Update Note" : "Create Note")}
             </button>
           </div>
         </form>
