@@ -3,10 +3,10 @@
 DevNexus unifies the fragmented workflow of modern software engineers. It combines code snippet management, Kanban-style task tracking, rich-text note-taking, and dynamic developer portfolios into a single, cohesive ecosystem.
 ---
 
-##  Live Demo
+##  Live Demo : https://devnexus-app.vercel.app
 
-* **Frontend:** [https://devnexus.vercel.app](https://www.google.com/search?q=https://devnexus.vercel.app) *(Update with your actual link)*
-* **Backend API:** [https://devnexus-api.onrender.com](https://www.google.com/search?q=https://devnexus-api.onrender.com) *(Update with your actual link)*
+* **Frontend:** [https://devnexus.vercel.app](https://devnexus-app.vercel.app) *(Update with your actual link)*
+* **Backend API:** [https://devnexus-api.onrender.com](https://mynanonotesapp.onrender.com) *(Update with your actual link)*
 
 ---
 
