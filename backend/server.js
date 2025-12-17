@@ -30,7 +30,8 @@ app.use(express.json());
 app.use(cors({
   origin: [
     "http://localhost:5173",               
-    "https://my-nano-notesf.vercel.app"     
+    "https://my-nano-notesf.vercel.app" ,
+    "https://devnexus-app.vercel.app",
   ],
   credentials: true
 }));
