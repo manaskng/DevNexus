@@ -60,7 +60,8 @@ const HighImpactProjectCard = ({ project, index }) => {
                <img src={imageUrl} alt={project.title} className="w-full h-full object-cover pt-6" />
             </div>
         </div>
-        <div className="lg:col-span-2 p-8 flex flex-col justify-center relative z-10">
+        {/* CHANGED: p-8 to p-4 md:p-8 (Less padding on mobile) */}
+        <div className="lg:col-span-2 p-4 md:p-8 flex flex-col justify-center relative z-10">
           <div className="mb-4">
              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{project.title}</h3>
              <p className="text-slate-600 dark:text-gray-200 text-sm leading-relaxed line-clamp-4">{project.description}</p>
@@ -172,7 +173,8 @@ function ProfileManager() {
 
       {/* Floating Nav */}
       <div className="sticky top-6 z-40 flex justify-center mb-12 pointer-events-none">
-        <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-slate-200 dark:border-white/10 px-6 py-2 rounded-full shadow-2xl flex items-center gap-6 text-sm font-medium pointer-events-auto">
+        {/* CHANGED: Adjusted padding (px-3), gap (gap-3), and text size (text-xs) for mobile */}
+        <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-slate-200 dark:border-white/10 px-3 py-2 md:px-6 rounded-full shadow-2xl flex items-center gap-3 md:gap-6 text-xs md:text-sm font-medium pointer-events-auto">
           {!isEditing && ["about", "skills", "projects", "badges"].map((sec) => (
             <button key={sec} onClick={() => scrollTo(sec)} className={`capitalize transition-colors ${activeSection === sec ? "text-blue-600 dark:text-purple-400 font-bold" : "text-gray-400 hover:text-slate-900 dark:hover:text-white"}`}>
               {sec}
@@ -202,7 +204,8 @@ function ProfileManager() {
 
       <AnimatePresence>{toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage(null)} />}</AnimatePresence>
 
-      <div className="max-w-6xl mx-auto px-6 pb-20 relative z-10 pt-4">
+      {/* CHANGED: px-6 to px-3 md:px-6 (Wider content on mobile) */}
+      <div className="max-w-6xl mx-auto px-3 md:px-6 pb-20 relative z-10 pt-4">
         {!isEditing ? (
             <div className="space-y-24 animate-fade-in-up">
                 
@@ -246,7 +249,7 @@ function ProfileManager() {
 
                 {/* --- STATS SECTION (RESTORED) --- */}
                 {(profile.githubUsername || profile.leetcodeUsername) && (
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-16">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto mb-16">
                      {profile.githubUsername && (
                        <div className="border rounded-2xl p-4 flex justify-center bg-white border-slate-200 dark:bg-white/5 dark:border-white/10 shadow-sm">
                           <img 

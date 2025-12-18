@@ -10,7 +10,7 @@ function NoteList() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+   
   const API_URL = import.meta.env.VITE_API_URL;
 
   // --- HELPER: CENTRALIZED SORTING LOGIC ---
@@ -99,7 +99,8 @@ function NoteList() {
   );
 
   return (
-    <div className="p-8 max-w-7xl mx-auto h-full flex flex-col">
+    // CHANGED: p-8 to p-3 md:p-8 (Wider notes on mobile)
+    <div className="p-3 md:p-8 max-w-7xl mx-auto h-full flex flex-col">
       {/* Header & Search */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <div>
@@ -140,7 +141,8 @@ function NoteList() {
                 <button onClick={openNewNote} className="text-blue-600 dark:text-blue-400 hover:underline mt-2">Create one now</button>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
+                // CHANGED: gap-6 to gap-4 md:gap-6 (Less space between cards on mobile)
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 pb-20">
                 {filteredNotes.map((note) => (
                     <NoteCard
                       key={note._id}

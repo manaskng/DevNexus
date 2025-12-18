@@ -83,7 +83,8 @@ function TaskBoard() {
   };
 
   return (
-    <div className="p-8 h-full flex flex-col max-w-5xl mx-auto">
+    // CHANGED: p-8 to p-3 md:p-8 (Wider tasks on mobile)
+    <div className="p-3 md:p-8 h-full flex flex-col max-w-5xl mx-auto">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
           <FiLayers className="text-blue-600 dark:text-purple-400"/> Task Board

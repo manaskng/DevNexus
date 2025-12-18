@@ -182,7 +182,8 @@ function SnippetLibrary() {
   );
 
   return (
-    <div className="p-8 h-full flex flex-col">
+    // CHANGED: p-8 to p-3 md:p-8 (Less padding on mobile)
+    <div className="p-3 md:p-8 h-full flex flex-col">
       <div className="flex justify-between items-center mb-6">
         <div>
            <h1 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2"><FiCode className="text-blue-600 dark:text-blue-400"/> Code Library</h1>
@@ -204,9 +205,9 @@ function SnippetLibrary() {
            <FiCode size={40} className="mb-2 opacity-20"/><p>No code snippets found.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 pb-20">
+        // CHANGED: gap-6 to gap-4 md:gap-6 (Smaller gap on mobile)
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 pb-20">
           {filteredSnippets.map(snippet => (
-            // CHANGED: Reduced height from 600px to 500px
             <div key={snippet._id} className="h-[500px]">
               <SnippetCard 
                 snippet={snippet} 
