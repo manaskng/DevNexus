@@ -67,8 +67,9 @@ const RichTextEditor = ({ content, onChange }) => {
     content: content,
     editorProps: {
       attributes: {
-        // 👇 FIXED: This must be a SINGLE LINE string. No newlines allowed.
-        class: 'prose prose-sm sm:prose lg:prose-lg max-w-none dark:prose-invert p-4 min-h-[150px] focus:outline-none prose-a:text-blue-600 hover:prose-a:underline text-slate-900 dark:text-gray-100',
+        // 👇 FIXED: Added 'dark:prose-headings:text-white' and 'dark:prose-strong:text-white'
+        // This forces Titles (H1, H2) and Bold text to be white in dark mode.
+        class: 'prose prose-sm sm:prose lg:prose-lg max-w-none dark:prose-invert dark:prose-headings:text-white dark:prose-strong:text-white p-4 min-h-[150px] focus:outline-none prose-a:text-blue-600 hover:prose-a:underline text-slate-900 dark:text-gray-100',
       },
     },
     onUpdate: ({ editor }) => {

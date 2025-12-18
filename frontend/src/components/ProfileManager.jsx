@@ -3,7 +3,7 @@ import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   FiEdit3, FiSave, FiPlus, FiTrash2, FiMapPin, FiMail, 
-  FiGithub, FiLinkedin, FiExternalLink, FiCpu, FiAward, FiCode, FiShare2, FiCheck, FiDownload, FiMessageSquare, FiX 
+  FiGithub, FiLinkedin, FiExternalLink, FiCpu, FiAward, FiCode, FiShare2, FiCheck, FiDownload, FiMessageSquare, FiX, FiArrowRight 
 } from "react-icons/fi";
 
 // --- HELPER: Get GitHub Image ---
@@ -38,6 +38,102 @@ const BackgroundPattern = () => (
   </div>
 );
 
+// --- NEW COMPONENT: Empty State Feature Card ---
+const EmptyFeatureCard = ({ icon: Icon, title, desc, delay }) => (
+  <motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay, duration: 0.5 }}
+    className="p-6 rounded-2xl bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10 backdrop-blur-sm flex flex-col items-center text-center hover:border-blue-500/30 transition-all hover:-translate-y-1"
+  >
+    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-4 shadow-inner">
+      <Icon size={28} />
+    </div>
+    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{title}</h3>
+    <p className="text-sm text-slate-500 dark:text-gray-400 leading-relaxed">{desc}</p>
+  </motion.div>
+);
+
+// --- NEW COMPONENT: Welcome Screen for New Users ---
+const EmptyProfileView = ({ username, onStart }) => (
+  <div className="min-h-[80vh] flex flex-col items-center justify-center relative z-20 px-4 py-12">
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="text-center max-w-4xl mx-auto"
+    >
+      {/* Avatar Placeholder with Pulse Effect */}
+      <div className="relative inline-block mb-10 group cursor-pointer" onClick={onStart}>
+         <div className="absolute -inset-4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 animate-pulse"></div>
+         <div className="relative w-32 h-32 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center border-4 border-white dark:border-[#0f172a] shadow-2xl z-10 overflow-hidden">
+            <span className="text-5xl font-black text-slate-300 dark:text-slate-600 select-none group-hover:scale-110 transition-transform duration-500">
+              {username ? username[0].toUpperCase() : "U"}
+            </span>
+            <div className="absolute inset-0 bg-black/5 dark:bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+               <FiPlus className="text-white text-3xl drop-shadow-md" />
+            </div>
+         </div>
+         {/* Online Badge */}
+         <motion.div 
+           initial={{ y: 10, opacity: 0 }} 
+           animate={{ y: 0, opacity: 1 }} 
+           transition={{ delay: 0.5 }}
+           className="absolute -right-4 top-0 bg-white dark:bg-slate-800 px-3 py-1 rounded-full shadow-lg border border-slate-100 dark:border-slate-700 flex items-center gap-1.5 text-xs font-bold text-green-500 z-20"
+         >
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            Online
+         </motion.div>
+      </div>
+
+      <h1 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white tracking-tight mb-6 leading-tight">
+        Hello, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600">{username}</span>.
+      </h1>
+      
+      <p className="text-xl text-slate-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
+        Your developer identity is blank. Let's change that.
+        <br className="hidden md:block" />
+        Build a <span className="text-slate-900 dark:text-white font-semibold">professional portfolio</span> that works as hard as you do.
+      </p>
+
+      <div className="grid md:grid-cols-3 gap-6 mb-16 text-left">
+         <EmptyFeatureCard 
+           icon={FiShare2} 
+           title="Shareable Link" 
+           desc={`Claim your unique handle devnexus.app/u/${username} and share it with the world.`}
+           delay={0.2}
+         />
+         <EmptyFeatureCard 
+           icon={FiGithub} 
+           title="Auto-Sync Stats" 
+           desc="Connect GitHub & LeetCode to visualize your contributions instantly."
+           delay={0.3}
+         />
+         <EmptyFeatureCard 
+           icon={FiAward} 
+           title="Career Timeline" 
+           desc="Showcase your experience, projects, and skills in a clean, modern timeline."
+           delay={0.4}
+         />
+      </div>
+
+      <motion.button 
+        whileHover={{ scale: 1.02, boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)" }}
+        whileTap={{ scale: 0.98 }}
+        onClick={onStart}
+        className="group relative inline-flex items-center gap-4 px-10 py-5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold text-xl shadow-xl transition-all overflow-hidden cursor-pointer"
+      >
+        <span className="relative z-10">Create My Profile</span>
+        <FiArrowRight className="relative z-10 group-hover:translate-x-1 transition-transform" />
+      </motion.button>
+      
+      <p className="mt-6 text-sm text-slate-400 dark:text-gray-500">
+        Takes less than 2 minutes to set up.
+      </p>
+    </motion.div>
+  </div>
+);
+
 const HighImpactProjectCard = ({ project, index }) => {
   const imageUrl = getProjectImage(project);
 
@@ -60,7 +156,6 @@ const HighImpactProjectCard = ({ project, index }) => {
                <img src={imageUrl} alt={project.title} className="w-full h-full object-cover pt-6" />
             </div>
         </div>
-        {/* CHANGED: p-8 to p-4 md:p-8 (Less padding on mobile) */}
         <div className="lg:col-span-2 p-4 md:p-8 flex flex-col justify-center relative z-10">
           <div className="mb-4">
              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{project.title}</h3>
@@ -123,14 +218,20 @@ function ProfileManager() {
   };
 
   const handleCancel = () => {
-    setFormData(profile); // Revert changes
+    setFormData(profile); 
     setIsEditing(false);
   };
 
   const handleShare = async () => {
+    if (!profile?.username) {
+       showToast("Please save your profile first to generate a link!");
+       return;
+    }
     try {
-        await navigator.clipboard.writeText(window.location.href);
-        showToast("Profile Link Copied to Clipboard!");
+        const safeUsername = encodeURIComponent(profile.username);
+        const publicLink = `${window.location.origin}/u/${safeUsername}`;
+        await navigator.clipboard.writeText(publicLink);
+        showToast("Public Portfolio Link Copied!");
     } catch (err) { console.error("Failed to copy", err); }
   };
 
@@ -167,46 +268,55 @@ function ProfileManager() {
 
   if (loading) return <div className="h-screen flex items-center justify-center bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-white">Loading...</div>;
 
+  // LOGIC: Check if profile exists but has no substantive data
+  const isProfileEmpty = profile && !profile.fullName;
+
+  // VISIBILITY LOGIC: Show Floating Nav if Profile Exists OR if we are in Edit Mode
+  // This ensures the "Save" button is visible when creating a profile for the first time.
+  const showFloatingNav = !isProfileEmpty || isEditing;
+
   return (
     <div className="h-full overflow-y-auto custom-scrollbar font-sans transition-colors duration-500 bg-slate-50 dark:bg-[#020617] text-slate-600 dark:text-gray-200 relative">
       <BackgroundPattern />
 
       {/* Floating Nav */}
-      <div className="sticky top-6 z-40 flex justify-center mb-12 pointer-events-none">
-        {/* CHANGED: Adjusted padding (px-3), gap (gap-3), and text size (text-xs) for mobile */}
-        <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-slate-200 dark:border-white/10 px-3 py-2 md:px-6 rounded-full shadow-2xl flex items-center gap-3 md:gap-6 text-xs md:text-sm font-medium pointer-events-auto">
-          {!isEditing && ["about", "skills", "projects", "badges"].map((sec) => (
-            <button key={sec} onClick={() => scrollTo(sec)} className={`capitalize transition-colors ${activeSection === sec ? "text-blue-600 dark:text-purple-400 font-bold" : "text-gray-400 hover:text-slate-900 dark:hover:text-white"}`}>
-              {sec}
-            </button>
-          ))}
-          
-          <div className="w-px h-4 bg-gray-400/30"></div>
-          
-          {!isEditing && <button onClick={handleShare} className="text-gray-400 hover:text-blue-400 transition-colors" title="Share"><FiShare2 /></button>}
-          
-          {isEditing ? (
-             <>
-               <button onClick={handleCancel} className="flex items-center gap-2 text-gray-400 hover:text-red-500 transition-colors">
-                  <FiX /> Cancel
-               </button>
-               <button onClick={handleSave} className="flex items-center gap-2 text-green-500 hover:text-green-400 font-bold transition-colors">
-                  <FiSave /> Save
-               </button>
-             </>
-          ) : (
-             <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 text-gray-400 hover:text-blue-600 dark:hover:text-purple-400">
-                <FiEdit3 /> Edit
-             </button>
-          )}
+      {showFloatingNav && (
+        <div className="sticky top-6 z-40 flex justify-center mb-12 pointer-events-none">
+            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-slate-200 dark:border-white/10 px-3 py-2 md:px-6 rounded-full shadow-2xl flex items-center gap-3 md:gap-6 text-xs md:text-sm font-medium pointer-events-auto">
+            {!isEditing && ["about", "skills", "projects", "badges"].map((sec) => (
+                <button key={sec} onClick={() => scrollTo(sec)} className={`capitalize transition-colors ${activeSection === sec ? "text-blue-600 dark:text-purple-400 font-bold" : "text-gray-400 hover:text-slate-900 dark:hover:text-white"}`}>
+                {sec}
+                </button>
+            ))}
+            
+            {!isEditing && <div className="w-px h-4 bg-gray-400/30"></div>}
+            
+            {!isEditing && <button onClick={handleShare} className="text-gray-400 hover:text-blue-400 transition-colors" title="Share Public Link"><FiShare2 /></button>}
+            
+            {isEditing ? (
+                <>
+                <button onClick={handleCancel} className="flex items-center gap-2 text-gray-400 hover:text-red-500 transition-colors">
+                    <FiX /> Cancel
+                </button>
+                <button onClick={handleSave} className="flex items-center gap-2 text-green-500 hover:text-green-400 font-bold transition-colors">
+                    <FiSave /> Save
+                </button>
+                </>
+            ) : (
+                <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 text-gray-400 hover:text-blue-600 dark:hover:text-purple-400">
+                    <FiEdit3 /> Edit
+                </button>
+            )}
+            </div>
         </div>
-      </div>
+      )}
 
       <AnimatePresence>{toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage(null)} />}</AnimatePresence>
 
-      {/* CHANGED: px-6 to px-3 md:px-6 (Wider content on mobile) */}
       <div className="max-w-6xl mx-auto px-3 md:px-6 pb-20 relative z-10 pt-4">
-        {!isEditing ? (
+        {isProfileEmpty && !isEditing ? (
+            <EmptyProfileView username={profile.username} onStart={() => setIsEditing(true)} />
+        ) : !isEditing ? (
             <div className="space-y-24 animate-fade-in-up">
                 
                 {/* HERO */}
@@ -247,7 +357,7 @@ function ProfileManager() {
                    </div>
                 </section>
 
-                {/* --- STATS SECTION (RESTORED) --- */}
+                {/* STATS */}
                 {(profile.githubUsername || profile.leetcodeUsername) && (
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto mb-16">
                      {profile.githubUsername && (

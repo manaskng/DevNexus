@@ -47,35 +47,40 @@ function NoteModel({ isOpen, onClose, note, onSave }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm animate-fade-in">
+      {/* FIXED: Added dark:bg-[#0f172a] */}
+      <div className="bg-white dark:bg-[#0f172a] rounded-xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[90vh] overflow-hidden transition-colors duration-300">
         
         {/* Header */}
-        <div className="p-5 border-b flex justify-between items-center bg-gray-50/80">
-           <h2 className="text-xl font-bold text-gray-800">
+        {/* FIXED: Added dark:border-white/10 and dark:bg-[#1e293b]/50 */}
+        <div className="p-5 border-b border-gray-200 dark:border-white/10 flex justify-between items-center bg-gray-50/80 dark:bg-[#1e293b]/50">
+           <h2 className="text-xl font-bold text-gray-800 dark:text-white">
              {note ? "Edit Note" : "Create New Note"}
            </h2>
            <button 
              onClick={onClose} 
-             className="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-200 transition-colors"
+             className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
            >
              <FiX size={24}/>
            </button>
         </div>
 
-        {error && <div className="bg-red-50 text-red-500 px-6 py-3 text-sm">{error}</div>}
+        {error && <div className="bg-red-50 dark:bg-red-500/10 text-red-500 dark:text-red-400 px-6 py-3 text-sm border-b border-red-100 dark:border-red-500/20">{error}</div>}
 
         <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden p-6 space-y-5">
+          {/* TITLE INPUT - FIXED DARK MODE */}
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Note Title"
             required
-            className="w-full px-4 py-3 bg-slate-50 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 font-bold text-lg placeholder-gray-400 transition-all"
+            className="w-full px-4 py-3 bg-slate-50 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 font-bold text-lg placeholder-gray-400 transition-all 
+            dark:bg-[#1e293b] dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
           />
           
-          <div className="flex-1 overflow-y-auto border border-gray-200 rounded-lg focus-within:ring-2 focus-within:ring-blue-500/20 transition-all bg-white">
+          {/* RICH TEXT EDITOR CONTAINER - FIXED DARK MODE */}
+          <div className="flex-1 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg focus-within:ring-2 focus-within:ring-blue-500/20 transition-all bg-white dark:bg-[#1e293b]">
             <RichTextEditor
               content={description}
               onChange={(newContent) => setDescription(newContent)}
@@ -86,7 +91,7 @@ function NoteModel({ isOpen, onClose, note, onSave }) {
             <button
               onClick={onClose}
               type="button"
-              className="px-5 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors"
+              className="px-5 py-2.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg font-medium transition-colors"
             >
               Cancel
             </button>

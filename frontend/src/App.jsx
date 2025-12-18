@@ -9,6 +9,7 @@ import ResetPassword from "./components/ResetPassword";
 import LandingPage from "./components/LandingPage";
 import SplashScreen from "./components/SplashScreen";
 import Dashboard from "./components/Dashboard";
+import PublicProfile from './components/PublicProfile';
 import axios from "axios";
 
 function App() {
@@ -56,6 +57,7 @@ function App() {
           <Route path="/register" element={!user ? <Register setUser={setUser} /> : <Navigate to="/" />} />
           <Route path="/forgot-password" element={!user ? <ForgotPassword /> : <Navigate to="/" />} />
           <Route path="/reset-password/:token" element={!user ? <ResetPassword /> : <Navigate to="/" />} />
+          <Route path="/u/:username" element={<PublicProfile />} />
 
           {/* Protected Dashboard Route - Handles sub-routes internally */}
           {user ? (
@@ -63,6 +65,7 @@ function App() {
           ) : (
             <Route path="/*" element={<Navigate to="/welcome" />} />
           )}
+          
         </Routes>
       </div>
     </ThemeProvider>
