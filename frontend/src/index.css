@@ -9,19 +9,53 @@
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
-/* Custom Scrollbar */
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1; 
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8; 
+}
+
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #334155; 
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: #475569; 
+}
+
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+
+
+::selection {
+  background-color: rgba(99, 102, 241, 0.3); /* Indigo-500 with opacity */
+  color: inherit;
 }
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-slate-700 rounded-full;
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
-.dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-slate-600;
+.no-scrollbar {
+  -ms-overflow-style: none;  
+  scrollbar-width: none;  
 }
 
 /* Link Styles */

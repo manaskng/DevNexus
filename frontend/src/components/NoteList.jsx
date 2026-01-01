@@ -14,7 +14,6 @@ function NoteList() {
    
   const API_URL = import.meta.env.VITE_API_URL;
 
-
   const sortNotes = (notesList) => {
     return [...notesList].sort((a, b) => {
       if (a.isPinned === b.isPinned) {
@@ -42,7 +41,6 @@ function NoteList() {
     }
   };
 
-  // --- HANDLE SAVE (Create/Update) ---
   const handleSave = (savedNote) => {
     let updatedList;
     if (selectedNote) {
@@ -53,13 +51,11 @@ function NoteList() {
     setNotes(sortNotes(updatedList));
   };
 
-  // --- HANDLE PIN TOGGLE ---
   const handlePin = async (noteId) => {
     const noteToToggle = notes.find(n => n._id === noteId);
     if (!noteToToggle) return;
 
     const newPinStatus = !noteToToggle.isPinned;
-
     const optimisticList = notes.map(n => 
       n._id === noteId ? { ...n, isPinned: newPinStatus } : n
     );
@@ -99,11 +95,8 @@ function NoteList() {
     note.description.toLowerCase().includes(search.toLowerCase())
   );
 
-  // --- NEW COMPONENT: COOL EMPTY STATE WITH IMAGE ---
   const EmptyNotesView = () => (
     <div className="flex flex-col xl:flex-row items-center justify-center gap-12 py-10 min-h-[60vh] max-w-6xl mx-auto px-4">
-      
-      {/* Left Side: Content */}
       <motion.div 
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -113,16 +106,13 @@ function NoteList() {
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase tracking-wider">
           <FiZap /> Capture Ideas Instantly
         </div>
-        
         <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white leading-tight">
           Your Digital <br/>
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600">Second Brain</span>
         </h2>
-        
         <p className="text-lg text-slate-600 dark:text-gray-400 leading-relaxed">
           Don't let great ideas slip away. Create rich text notes with <strong>bold</strong>, <em>italics</em>, lists, and code blocks.
         </p>
-  
         <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center xl:justify-start">
           <button 
             onClick={openNewNote}
@@ -132,8 +122,6 @@ function NoteList() {
           </button>
         </div>
       </motion.div>
-  
-      {/* Right Side: SLIDE-9 IMAGE VISUAL */}
       <motion.div 
         initial={{ opacity: 0, scale: 0.9, rotate: 2 }}
         animate={{ opacity: 1, scale: 1, rotate: 0 }}
@@ -141,17 +129,12 @@ function NoteList() {
         className="flex-1 w-full max-w-md relative"
       >
         <div className="relative group">
-            {/* Glow Effect - UPDATED: Lowered opacity (15/25) and inset (2) for subtler look */}
             <div className="absolute -inset-2 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-2xl blur-xl opacity-15 group-hover:opacity-25 transition-opacity animate-pulse"></div>
-            
-            {/* The Image (slide-9.png) */}
             <img 
               src="/slide-9.png" 
               alt="Rich Text Note Preview" 
               className="relative rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 w-full object-cover transform transition-transform duration-700 hover:scale-[1.02] hover:-rotate-1"
             />
-
-            {/* Floating 'Rich Text' Badge */}
             <div className="absolute -bottom-6 -left-6 bg-white dark:bg-[#1e293b] p-4 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 hidden sm:block">
                <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-500 font-bold">
@@ -169,9 +152,7 @@ function NoteList() {
   );
 
   return (
-    // CHANGED: p-8 to p-3 md:p-8 (Wider notes on mobile)
     <div className="p-3 md:p-8 max-w-7xl mx-auto h-full flex flex-col">
-      {/* Header & Search */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
@@ -207,7 +188,6 @@ function NoteList() {
         <div className="text-center py-20 text-slate-400 dark:text-gray-500">Loading your thoughts...</div>
       ) : (
         <>
-            {/* LOGIC: Total Notes 0? Show Cool Empty State. Search 0? Show Simple Text. */}
             {notes.length === 0 ? (
                 <EmptyNotesView />
             ) : filteredNotes.length === 0 ? (
@@ -216,8 +196,7 @@ function NoteList() {
                    <button onClick={() => setSearch("")} className="text-indigo-600 dark:text-indigo-400 hover:underline mt-2">Clear Search</button>
                 </div>
             ) : (
-                // CHANGED: gap-6 to gap-4 md:gap-6 (Less space between cards on mobile)
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 pb-20">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
                 {filteredNotes.map((note) => (
                     <NoteCard
                       key={note._id}

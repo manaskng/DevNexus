@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   FiEdit3, FiSave, FiPlus, FiTrash2, FiMapPin, FiMail, 
-  FiGithub, FiLinkedin, FiExternalLink, FiCpu, FiAward, FiCode, FiShare2, FiCheck, FiDownload, FiMessageSquare, FiX, FiArrowRight, FiCamera, FiImage 
+  FiGithub, FiLinkedin, FiExternalLink, FiCpu, FiAward, FiCode, FiShare2, FiCheck, FiDownload, FiMessageSquare, FiX, FiArrowRight, FiCamera, FiImage, FiStar 
 } from "react-icons/fi";
 
 // --- HELPER: Normalize Skills for Icons ---
@@ -219,7 +219,7 @@ const EmptyProfileView = ({ username, onStart }) => (
   </div>
 );
 
-// --- COMPONENT: Project Card with Icons & Animation ---
+// --- COMPONENT: Project Card ---
 const HighImpactProjectCard = ({ project, index }) => {
   const imageUrl = getProjectImage(project);
 
@@ -227,16 +227,13 @@ const HighImpactProjectCard = ({ project, index }) => {
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -5 }} // Subtle lift on hover
+      whileHover={{ y: -5 }} 
       transition={{ delay: index * 0.1, duration: 0.4 }}
       className="group relative w-full rounded-3xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-sm overflow-hidden hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300"
     >
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
         <div className="lg:col-span-3 relative h-64 lg:h-auto overflow-hidden bg-slate-100 dark:bg-gray-900/50 p-6 flex items-center justify-center">
-            {/* Hover Glow Effect */}
             <div className="absolute inset-0 bg-gradient-to-tr from-blue-400/20 dark:from-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            
-            {/* Image Container with 3D feel */}
             <div className="relative w-full h-full rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-white/10 transform group-hover:scale-[1.02] transition-transform duration-500">
                <div className="absolute top-0 left-0 right-0 h-6 bg-slate-200 dark:bg-gray-800 flex items-center gap-1.5 px-3 z-10">
                   <div className="w-2 h-2 rounded-full bg-red-500/50"></div>
@@ -252,7 +249,6 @@ const HighImpactProjectCard = ({ project, index }) => {
              <p className="text-slate-600 dark:text-gray-200 text-sm leading-relaxed line-clamp-4">{project.description}</p>
           </div>
           
-          {/* TECH STACK AS ICONS */}
           <div className="flex flex-wrap gap-3 mb-8">
              {project.techStack && project.techStack.map((tech, i) => {
                 const iconUrl = getSkillIcon(tech);
@@ -263,10 +259,9 @@ const HighImpactProjectCard = ({ project, index }) => {
                         src={iconUrl} 
                         alt={tech} 
                         className="w-8 h-8"
-                        onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }} // Hide img if error, show span
+                        onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }} 
                       />
                     ) : null}
-                    {/* Fallback Text Badge (Shown if no icon or on error) */}
                     <span className={`${iconUrl ? 'hidden' : 'block'} px-2.5 py-1 text-xs font-bold rounded-md border bg-white border-slate-200 text-slate-600 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300`}>
                       {tech}
                     </span>
@@ -285,6 +280,37 @@ const HighImpactProjectCard = ({ project, index }) => {
   );
 };
 
+// --- COMPONENT: Achievement Card (NEW & IMPROVED) ---
+const AchievementCard = ({ text, index }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ delay: index * 0.1 }}
+    whileHover={{ scale: 1.02, translateY: -5 }}
+    className="relative p-6 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#1e293b]/50 backdrop-blur-sm shadow-sm hover:shadow-xl hover:border-yellow-500/50 transition-all group overflow-hidden"
+  >
+    {/* Subtle Watermark Icon */}
+    <div className="absolute -top-2 -right-4 p-4 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rotate-12">
+      <FiAward size={100} className="text-slate-900 dark:text-white" />
+    </div>
+    
+    <div className="flex items-start gap-4 relative z-10">
+      {/* Golden Badge Icon */}
+      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-white shadow-lg shrink-0">
+         <FiStar size={24} className="fill-white/20" />
+      </div>
+      <div>
+         <h4 className="text-lg font-bold text-slate-800 dark:text-white leading-tight mb-2 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
+           Milestone Unlocked
+         </h4>
+         <p className="text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
+           {text}
+         </p>
+      </div>
+    </div>
+  </motion.div>
+);
+
 // --- MAIN COMPONENT ---
 
 function ProfileManager() {
@@ -296,6 +322,7 @@ function ProfileManager() {
   const [toastMessage, setToastMessage] = useState(null);
   
   const API_URL = import.meta.env.VITE_API_URL;
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -498,39 +525,33 @@ function ProfileManager() {
                    </section>
                 )}
 
-                {/* ACHIEVEMENTS */}
+                {/* ACHIEVEMENTS - NEW CARD DESIGN */}
                 {profile.achievements.length > 0 && (
-                   <section id="badges" className="scroll-mt-24 pb-12">
-                      <div className="flex items-center gap-3 mb-12"><div className="h-8 w-1 bg-yellow-500 rounded-full"></div><h2 className="text-3xl font-bold text-slate-900 dark:text-white">Achievements</h2></div>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                   <section id="badges" className="scroll-mt-24 pb-20">
+                      <div className="flex items-center gap-3 mb-10"><div className="h-8 w-1 bg-yellow-500 rounded-full"></div><h2 className="text-3xl font-bold text-slate-900 dark:text-white">Key Achievements</h2></div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                          {profile.achievements.map((ach, i) => (
-                            <div key={i} className="aspect-square rounded-2xl border flex flex-col items-center justify-center p-4 transition-all hover:scale-105 hover:shadow-xl bg-white border-slate-200 dark:bg-white/5 dark:border-white/10">
-                               <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-3 bg-opacity-10 bg-black dark:bg-white">
-                                  {ach.toLowerCase().includes('code') ? <FiCode size={24} className="text-blue-500"/> : <FiAward size={24} className="text-yellow-500"/>}
-                                </div>
-                               <span className="text-xs font-bold text-center uppercase tracking-wider text-slate-600 dark:text-gray-200">{ach}</span>
-                            </div>
+                            <AchievementCard key={i} text={ach} index={i} />
                          ))}
                       </div>
                    </section>
                 )}
             </div>
         ) : (
-            /* EDIT FORM - WITHOUT Cloudinary Uploads */
             <div className="border p-8 rounded-3xl shadow-xl bg-white border-slate-200 dark:bg-white/5 dark:border-white/10">
                 <div className="flex justify-between items-center mb-8 border-b pb-4 border-slate-200 dark:border-gray-800">
                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Edit Profile</h2>
                    <div className="text-slate-600 dark:text-gray-200">Update your details below</div>
                 </div>
 
-                <div className="flex flex-col items-center gap-4 mb-8">
+                <div className="flex justify-center mb-8">
                    <div className="relative group">
                       <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-slate-200 dark:border-white/10 bg-slate-100 flex items-center justify-center">
                          {renderAvatar(formData.profilePic, formData.fullName)}
                       </div>
                    </div>
                    <input 
-                     className="w-full max-w-md border p-2 rounded outline-none text-sm bg-white border-slate-200 text-slate-900 dark:bg-[#1e293b] dark:border-white/10 dark:text-white text-center" 
+                     className="w-full max-w-md border p-2 rounded outline-none text-sm bg-white border-slate-200 text-slate-900 dark:bg-[#1e293b] dark:border-white/10 dark:text-white text-center mt-4" 
                      placeholder="Paste Profile Picture URL (Optional)" 
                      name="profilePic"
                      value={formData.profilePic || ""} 
