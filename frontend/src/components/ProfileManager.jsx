@@ -1,14 +1,120 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   FiEdit3, FiSave, FiPlus, FiTrash2, FiMapPin, FiMail, 
-  FiGithub, FiLinkedin, FiExternalLink, FiCpu, FiAward, FiCode, FiShare2, FiCheck, FiDownload, FiMessageSquare, FiX, FiArrowRight, FiCamera, FiUploadCloud 
+  FiGithub, FiLinkedin, FiExternalLink, FiCpu, FiAward, FiCode, FiShare2, FiCheck, FiDownload, FiMessageSquare, FiX, FiArrowRight, FiCamera, FiImage 
 } from "react-icons/fi";
 
+// --- HELPER: Normalize Skills for Icons ---
+const getSkillIcon = (skillName) => {
+  if (!skillName) return null;
+  
+  // Normalize: Lowercase, remove spaces, dots, and special chars (except + and # for C++/C#)
+  const clean = skillName.toLowerCase().trim();
 
+  // Comprehensive Map for SkillIcons.dev slugs
+  const map = {
+    // Languages
+    'c++': 'cpp', 'cpp': 'cpp', 'cplusplus': 'cpp',
+    'c#': 'cs', 'csharp': 'cs',
+    'python': 'python', 'py': 'python',
+    'java': 'java',
+    'javascript': 'js', 'js': 'js',
+    'typescript': 'ts', 'ts': 'ts',
+    'html': 'html', 'html5': 'html',
+    'css': 'css', 'css3': 'css',
+    'go': 'go', 'golang': 'go',
+    'rust': 'rust',
+    'php': 'php',
+    'ruby': 'ruby',
+    'swift': 'swift',
+    'kotlin': 'kotlin',
+    'dart': 'dart',
 
-/
+    // Frontend
+    'react': 'react', 'reactjs': 'react', 'react.js': 'react',
+    'next': 'nextjs', 'nextjs': 'nextjs',
+    'vue': 'vue', 'vuejs': 'vue',
+    'angular': 'angular',
+    'svelte': 'svelte',
+    'tailwind': 'tailwindcss', 'tailwindcss': 'tailwindcss', 'tailwind css': 'tailwindcss',
+    'bootstrap': 'bootstrap',
+    'sass': 'sass', 'scss': 'sass',
+    'redux': 'redux',
+    'jquery': 'jquery',
+    'vite': 'vite',
+    'webpack': 'webpack',
+    'babel': 'babel',
+
+    // Backend & Database
+    'node': 'nodejs', 'nodejs': 'nodejs', 'node.js': 'nodejs',
+    'express': 'express', 'expressjs': 'express',
+    'mongo': 'mongodb', 'mongodb': 'mongodb', 'mongoose': 'mongodb',
+    'postgres': 'postgresql', 'postgresql': 'postgresql', 'sql': 'mysql',
+    'mysql': 'mysql',
+    'redis': 'redis',
+    'firebase': 'firebase',
+    'appwrite': 'appwrite',
+    'supabase': 'supabase',
+    'graphql': 'graphql',
+    'prisma': 'prisma',
+    'nginx': 'nginx',
+
+    // Machine Learning & Data Science
+    'scikitlearn': 'sklearn', 'sklearn': 'sklearn', 'sci-kit learn': 'sklearn',
+    'tensorflow': 'tensorflow', 'tf': 'tensorflow',
+    'pytorch': 'pytorch',
+    'opencv': 'opencv',
+    'pandas': 'pandas',
+    'numpy': 'numpy',
+    'matplotlib': 'matplotlib',
+    'anaconda': 'anaconda',
+    'r': 'r',
+
+    // DevOps & Cloud
+    'docker': 'docker',
+    'kubernetes': 'kubernetes', 'k8s': 'kubernetes',
+    'aws': 'aws', 'amazon': 'aws',
+    'gcp': 'gcp', 'google cloud': 'gcp',
+    'azure': 'azure',
+    'vercel': 'vercel',
+    'netlify': 'netlify',
+    'heroku': 'heroku',
+    'git': 'git',
+    'github': 'github',
+    'gitlab': 'gitlab',
+    'linux': 'linux',
+    'ubuntu': 'ubuntu',
+    'bash': 'bash',
+    'jenkins': 'jenkins',
+    'grafana': 'grafana',
+    'postman': 'postman',
+    
+    // Tools
+    'vscode': 'vscode',
+    'figma': 'figma',
+    'blender': 'blender',
+    'unity': 'unity',
+    'unreal': 'unreal'
+  };
+
+  // 1. Try exact map match
+  if (map[clean]) return `https://skillicons.dev/icons?i=${map[clean]}`;
+  
+  // 2. Try removing spaces/dots for direct slug match (e.g. "next.js" -> "nextjs")
+  const directSlug = clean.replace(/[^a-z0-9]/g, '');
+  if (map[directSlug]) return `https://skillicons.dev/icons?i=${map[directSlug]}`;
+
+  // 3. Fallback: Check if the cleaned word exists in the values of the map (reverse lookup)
+  const allSlugs = Object.values(map);
+  if (allSlugs.includes(clean)) return `https://skillicons.dev/icons?i=${clean}`;
+
+  // 4. Return null to trigger Text Badge fallback
+  return null;
+};
+
+// --- HELPER: Get GitHub Image ---
 const getProjectImage = (project) => {
   if (project.image && project.image.trim() !== "") return project.image;
   if (project.githubLink && project.githubLink.includes("github.com")) {
@@ -40,7 +146,7 @@ const BackgroundPattern = () => (
   </div>
 );
 
-
+// --- COMPONENT: Feature Card ---
 const EmptyFeatureCard = ({ icon: Icon, title, desc, delay }) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
@@ -56,7 +162,7 @@ const EmptyFeatureCard = ({ icon: Icon, title, desc, delay }) => (
   </motion.div>
 );
 
-// --- NEW COMPONENT: Welcome Screen for New Users ---
+// --- COMPONENT: Welcome Screen ---
 const EmptyProfileView = ({ username, onStart }) => (
   <div className="min-h-[80vh] flex flex-col items-center justify-center relative z-20 px-4 py-12">
     <motion.div 
@@ -89,10 +195,23 @@ const EmptyProfileView = ({ username, onStart }) => (
       <h1 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white tracking-tight mb-6 leading-tight">
         Hello, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600">{username}</span>.
       </h1>
+      
       <p className="text-xl text-slate-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
         Your developer identity is blank. Let's change that.
       </p>
-      <motion.button onClick={onStart} className="group relative inline-flex items-center gap-4 px-10 py-5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold text-xl shadow-xl transition-all overflow-hidden cursor-pointer">
+
+      <div className="grid md:grid-cols-3 gap-6 mb-16 text-left">
+         <EmptyFeatureCard icon={FiShare2} title="Shareable Link" desc={`Claim your unique handle devnexus.app/u/${username} and share it with the world.`} delay={0.2} />
+         <EmptyFeatureCard icon={FiGithub} title="Auto-Sync Stats" desc="Connect GitHub & LeetCode to visualize your contributions instantly." delay={0.3} />
+         <EmptyFeatureCard icon={FiAward} title="Career Timeline" desc="Showcase your experience, projects, and skills in a clean, modern timeline." delay={0.4} />
+      </div>
+
+      <motion.button 
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={onStart}
+        className="group relative inline-flex items-center gap-4 px-10 py-5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold text-xl shadow-xl transition-all overflow-hidden cursor-pointer"
+      >
         <span className="relative z-10">Create My Profile</span>
         <FiArrowRight className="relative z-10 group-hover:translate-x-1 transition-transform" />
       </motion.button>
@@ -100,29 +219,62 @@ const EmptyProfileView = ({ username, onStart }) => (
   </div>
 );
 
+// --- COMPONENT: Project Card with Icons & Animation ---
 const HighImpactProjectCard = ({ project, index }) => {
   const imageUrl = getProjectImage(project);
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
-      className="group relative w-full rounded-3xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-sm overflow-hidden hover:border-purple-500/50 transition-all duration-500 shadow-sm"
+      whileHover={{ y: -5 }} // Subtle lift on hover
+      transition={{ delay: index * 0.1, duration: 0.4 }}
+      className="group relative w-full rounded-3xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-sm overflow-hidden hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300"
     >
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
         <div className="lg:col-span-3 relative h-64 lg:h-auto overflow-hidden bg-slate-100 dark:bg-gray-900/50 p-6 flex items-center justify-center">
-            <img src={imageUrl} alt={project.title} className="w-full h-full object-cover pt-6" />
+            {/* Hover Glow Effect */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-blue-400/20 dark:from-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            
+            {/* Image Container with 3D feel */}
+            <div className="relative w-full h-full rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-white/10 transform group-hover:scale-[1.02] transition-transform duration-500">
+               <div className="absolute top-0 left-0 right-0 h-6 bg-slate-200 dark:bg-gray-800 flex items-center gap-1.5 px-3 z-10">
+                  <div className="w-2 h-2 rounded-full bg-red-500/50"></div>
+                  <div className="w-2 h-2 rounded-full bg-yellow-500/50"></div>
+                  <div className="w-2 h-2 rounded-full bg-green-500/50"></div>
+               </div>
+               <img src={imageUrl} alt={project.title} className="w-full h-full object-cover pt-6" />
+            </div>
         </div>
         <div className="lg:col-span-2 p-4 md:p-8 flex flex-col justify-center relative z-10">
           <div className="mb-4">
              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{project.title}</h3>
              <p className="text-slate-600 dark:text-gray-200 text-sm leading-relaxed line-clamp-4">{project.description}</p>
           </div>
-          <div className="flex flex-wrap gap-2 mb-8">
-             {project.techStack && project.techStack.map((tech, i) => (
-                <span key={i} className="px-2.5 py-1 text-xs font-bold rounded-md border bg-white border-slate-200 text-slate-600 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300">{tech}</span>
-             ))}
+          
+          {/* TECH STACK AS ICONS */}
+          <div className="flex flex-wrap gap-3 mb-8">
+             {project.techStack && project.techStack.map((tech, i) => {
+                const iconUrl = getSkillIcon(tech);
+                return (
+                  <div key={i} title={tech} className="transition-transform hover:scale-110">
+                    {iconUrl ? (
+                      <img 
+                        src={iconUrl} 
+                        alt={tech} 
+                        className="w-8 h-8"
+                        onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }} // Hide img if error, show span
+                      />
+                    ) : null}
+                    {/* Fallback Text Badge (Shown if no icon or on error) */}
+                    <span className={`${iconUrl ? 'hidden' : 'block'} px-2.5 py-1 text-xs font-bold rounded-md border bg-white border-slate-200 text-slate-600 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300`}>
+                      {tech}
+                    </span>
+                  </div>
+                );
+             })}
           </div>
+
           <div className="flex gap-4 mt-auto">
              {project.githubLink && (<a href={project.githubLink} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10"><FiGithub /> Code</a>)}
              {project.liveLink && (<a href={project.liveLink} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-opacity shadow-lg bg-blue-600 dark:bg-purple-600 text-white hover:opacity-90"><FiExternalLink /> Live</a>)}
@@ -133,17 +285,17 @@ const HighImpactProjectCard = ({ project, index }) => {
   );
 };
 
+// --- MAIN COMPONENT ---
+
 function ProfileManager() {
   const [profile, setProfile] = useState(null);
   const [formData, setFormData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [uploading, setUploading] = useState(false);
   const [activeSection, setActiveSection] = useState("about");
   const [toastMessage, setToastMessage] = useState(null);
   
   const API_URL = import.meta.env.VITE_API_URL;
-  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -182,7 +334,7 @@ function ProfileManager() {
         const publicLink = `${window.location.origin}/u/${safeUsername}`;
         await navigator.clipboard.writeText(publicLink);
         showToast("Public Portfolio Link Copied!");
-    } catch (err) {}
+    } catch (err) { console.error("Failed to copy", err); }
   };
 
   const showToast = (msg) => {
@@ -190,34 +342,9 @@ function ProfileManager() {
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const handleProfilePicUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setUploading(true);
-    try {
-      const url = await uploadImageToCloudinary(file);
-      setFormData(prev => ({ ...prev, profilePic: url }));
-      showToast("Image uploaded!");
-    } catch (error) { showToast("Upload failed."); } 
-    finally { setUploading(false); }
-  };
-
-  const handleProjectImageUpload = async (e, index) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setUploading(true);
-    try {
-      const url = await uploadImageToCloudinary(file);
-      const newProjects = [...formData.projects];
-      newProjects[index].image = url;
-      setFormData(prev => ({ ...prev, projects: newProjects }));
-      showToast("Project image uploaded!");
-    } catch (error) { showToast("Upload failed."); } 
-    finally { setUploading(false); }
-  };
-
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
   const handleArrayChange = (e, field) => setFormData({ ...formData, [field]: e.target.value.split(',').map(s => s.trim()) });
+  
   const updateProject = (index, field, value) => {
     setFormData(prev => {
       const newProjects = [...prev.projects];
@@ -239,20 +366,21 @@ function ProfileManager() {
   };
   const scrollTo = (id) => { document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); setActiveSection(id); };
 
-  if (loading) return <div className="h-screen flex items-center justify-center bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-white">Loading...</div>;
-
-  const isProfileEmpty = profile && !profile.fullName;
-  const showFloatingNav = !isProfileEmpty || isEditing;
-
   const renderAvatar = (src, name) => {
     if (src) return <img src={src} alt="Profile" className="w-full h-full object-cover" />;
     return <span className="text-4xl font-bold text-slate-900 dark:text-white">{name ? name[0] : "U"}</span>;
   };
 
+  if (loading) return <div className="h-screen flex items-center justify-center bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-white">Loading...</div>;
+
+  const isProfileEmpty = profile && !profile.fullName;
+  const showFloatingNav = !isProfileEmpty || isEditing;
+
   return (
     <div className="h-full overflow-y-auto custom-scrollbar font-sans transition-colors duration-500 bg-slate-50 dark:bg-[#020617] text-slate-600 dark:text-gray-200 relative">
       <BackgroundPattern />
 
+      {/* Floating Nav */}
       {showFloatingNav && (
         <div className="sticky top-6 z-40 flex justify-center mb-12 pointer-events-none">
             <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-slate-200 dark:border-white/10 px-3 py-2 md:px-6 rounded-full shadow-2xl flex items-center gap-3 md:gap-6 text-xs md:text-sm font-medium pointer-events-auto">
@@ -266,10 +394,8 @@ function ProfileManager() {
             
             {isEditing ? (
                 <>
-                <button onClick={handleCancel} disabled={uploading} className="flex items-center gap-2 text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"><FiX /> Cancel</button>
-                <button onClick={handleSave} disabled={uploading} className="flex items-center gap-2 text-green-500 hover:text-green-400 font-bold transition-colors disabled:opacity-50">
-                    {uploading ? "Uploading..." : <><FiSave /> Save</>}
-                </button>
+                <button onClick={handleCancel} className="flex items-center gap-2 text-gray-400 hover:text-red-500 transition-colors"><FiX /> Cancel</button>
+                <button onClick={handleSave} className="flex items-center gap-2 text-green-500 hover:text-green-400 font-bold transition-colors"><FiSave /> Save</button>
                 </>
             ) : (
                 <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 text-gray-400 hover:text-blue-600 dark:hover:text-purple-400"><FiEdit3 /> Edit</button>
@@ -285,6 +411,8 @@ function ProfileManager() {
             <EmptyProfileView username={profile.username} onStart={() => setIsEditing(true)} />
         ) : !isEditing ? (
             <div className="space-y-24 animate-fade-in-up">
+                
+                {/* HERO */}
                 <section id="about" className="flex flex-col items-center text-center max-w-3xl mx-auto">
                    <div className="relative mb-6">
                       <div className="absolute -inset-1 bg-gradient-to-r from-blue-200 to-purple-200 dark:from-purple-600 dark:to-blue-600 rounded-full blur opacity-40 animate-pulse"></div>
@@ -311,12 +439,11 @@ function ProfileManager() {
                    </div>
                 </section>
 
-                {/* STATS - UPDATED PROVIDER to avoid 503 errors */}
+                {/* STATS */}
                 {(profile.githubUsername || profile.leetcodeUsername) && (
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto mb-16">
                      {profile.githubUsername && (
                        <div className="border rounded-2xl p-4 flex justify-center bg-white border-slate-200 dark:bg-white/5 dark:border-white/10 shadow-sm overflow-hidden">
-                          {/* Use Profile Summary Cards API which is more reliable */}
                           <img 
                             src={`https://github-profile-summary-cards.vercel.app/api/cards/stats?username=${profile.githubUsername}&theme=github_dark`} 
                             className="w-full max-w-md" 
@@ -336,24 +463,42 @@ function ProfileManager() {
                    </div>
                 )}
 
-                {/* ... Skills, Projects, Badges ... */}
-                {/* (Rest of the render code is unchanged from your provided file) */}
+                {/* SKILLS - NOW WITH ICONS */}
                 {profile.skills.length > 0 && (
                   <section id="skills" className="text-center">
                      <h2 className="text-3xl font-bold mb-10 flex items-center justify-center gap-2 text-slate-900 dark:text-white"><FiCpu className="text-blue-600 dark:text-purple-400"/> Tech Stack</h2>
-                     <div className="flex flex-wrap justify-center gap-4">
-                        {profile.skills.map((skill, idx) => (
-                           <div key={idx} className="px-5 py-2 rounded-lg border font-medium cursor-default bg-white border-slate-200 text-slate-600 dark:bg-white/5 dark:border-white/10 dark:text-gray-200 dark:hover:text-purple-400">{skill}</div>
-                        ))}
+                     <div className="flex flex-wrap justify-center gap-6">
+                        {profile.skills.map((skill, idx) => {
+                           const iconUrl = getSkillIcon(skill);
+                           return (
+                             <div key={idx} title={skill} className="transition-transform hover:scale-125 flex flex-col items-center">
+                                {iconUrl ? (
+                                  <img 
+                                    src={iconUrl} 
+                                    alt={skill} 
+                                    className="w-12 h-12 md:w-16 md:h-16"
+                                    onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }} 
+                                  />
+                                ) : null}
+                                <div className={`${iconUrl ? 'hidden' : 'block'} px-5 py-2 rounded-lg border font-medium cursor-default bg-white border-slate-200 text-slate-600 dark:bg-white/5 dark:border-white/10 dark:text-gray-200`}>
+                                  {skill}
+                                </div>
+                             </div>
+                           );
+                        })}
                      </div>
                   </section>
                 )}
+
+                {/* PROJECTS - UPDATED WITH ICONS */}
                 {profile.projects.length > 0 && (
                    <section id="projects" className="scroll-mt-24">
                       <div className="flex items-center gap-3 mb-12"><div className="h-8 w-1 rounded-full bg-blue-500 dark:bg-purple-500"></div><h2 className="text-3xl font-bold text-slate-900 dark:text-white">Featured Projects</h2></div>
                       <div className="flex flex-col gap-16">{profile.projects.map((project, i) => <HighImpactProjectCard key={i} project={project} index={i} />)}</div>
                    </section>
                 )}
+
+                {/* ACHIEVEMENTS */}
                 {profile.achievements.length > 0 && (
                    <section id="badges" className="scroll-mt-24 pb-12">
                       <div className="flex items-center gap-3 mb-12"><div className="h-8 w-1 bg-yellow-500 rounded-full"></div><h2 className="text-3xl font-bold text-slate-900 dark:text-white">Achievements</h2></div>
@@ -371,22 +516,26 @@ function ProfileManager() {
                 )}
             </div>
         ) : (
+            /* EDIT FORM - WITHOUT Cloudinary Uploads */
             <div className="border p-8 rounded-3xl shadow-xl bg-white border-slate-200 dark:bg-white/5 dark:border-white/10">
                 <div className="flex justify-between items-center mb-8 border-b pb-4 border-slate-200 dark:border-gray-800">
                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Edit Profile</h2>
                    <div className="text-slate-600 dark:text-gray-200">Update your details below</div>
                 </div>
 
-                <div className="flex justify-center mb-8">
-                   <div className="relative group cursor-pointer" onClick={() => fileInputRef.current.click()}>
+                <div className="flex flex-col items-center gap-4 mb-8">
+                   <div className="relative group">
                       <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-slate-200 dark:border-white/10 bg-slate-100 flex items-center justify-center">
                          {renderAvatar(formData.profilePic, formData.fullName)}
                       </div>
-                      <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                         <FiCamera className="text-white text-3xl" />
-                      </div>
-                      <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleProfilePicUpload} />
                    </div>
+                   <input 
+                     className="w-full max-w-md border p-2 rounded outline-none text-sm bg-white border-slate-200 text-slate-900 dark:bg-[#1e293b] dark:border-white/10 dark:text-white text-center" 
+                     placeholder="Paste Profile Picture URL (Optional)" 
+                     name="profilePic"
+                     value={formData.profilePic || ""} 
+                     onChange={handleChange} 
+                   />
                 </div>
 
                 <div className="space-y-8">
@@ -433,23 +582,11 @@ function ProfileManager() {
                                 <div key={i} className="p-6 border rounded-xl relative space-y-4 bg-slate-50 border-slate-200 dark:bg-[#1e293b] dark:border-white/10">
                                     <button onClick={()=>removeProject(i)} className="absolute top-4 right-4 text-gray-400 hover:text-red-500"><FiTrash2/></button>
                                     
-                                    {/* Project Image Upload */}
-                                    <div className="flex items-center gap-4">
-                                       <div className="w-24 h-24 rounded-lg bg-slate-200 dark:bg-white/5 overflow-hidden flex-shrink-0">
-                                          {proj.image ? <img src={proj.image} className="w-full h-full object-cover" /> : <div className="flex items-center justify-center h-full text-xs text-gray-500">No Image</div>}
-                                       </div>
-                                       <div className="flex-1">
-                                          <label className="cursor-pointer flex items-center gap-2 text-sm text-blue-600 hover:underline">
-                                             <FiUploadCloud /> Upload Cover Image
-                                             <input type="file" className="hidden" accept="image/*" onChange={(e) => handleProjectImageUpload(e, i)} />
-                                          </label>
-                                          <input className="w-full mt-2 border p-2 rounded outline-none text-sm bg-white border-slate-200 text-slate-900 dark:bg-[#020617] dark:border-gray-700 dark:text-white" placeholder="Or paste Image URL" value={proj.image || ""} onChange={e=>updateProject(i, 'image', e.target.value)} />
-                                       </div>
-                                    </div>
-
                                     <input className="w-full bg-transparent border-b p-2 font-bold text-lg outline-none border-slate-200 dark:border-white/10 text-slate-900 dark:text-white" placeholder="Project Title" value={proj.title} onChange={e=>updateProject(i, 'title', e.target.value)} />
                                     <textarea className="w-full border p-3 rounded-lg outline-none h-24 text-sm bg-white border-slate-200 text-slate-600 dark:bg-[#020617] dark:border-gray-700 dark:text-gray-300" placeholder="Description" value={proj.description} onChange={e=>updateProject(i, 'description', e.target.value)} />
                                     <input className="w-full border p-3 rounded-lg outline-none text-sm bg-white border-slate-200 text-slate-600 dark:bg-[#020617] dark:border-gray-700 dark:text-gray-300" placeholder="Tech Stack (comma sep)" value={proj.techStack} onChange={e=>updateProject(i, 'techStack', e.target.value)} />
+                                    <input className="w-full border p-3 rounded-lg outline-none text-sm bg-white border-slate-200 text-slate-600 dark:bg-[#020617] dark:border-gray-700 dark:text-gray-300" placeholder="Cover Image URL (Optional)" value={proj.image || ""} onChange={e=>updateProject(i, 'image', e.target.value)} />
+                                    
                                     <div className="flex gap-4">
                                         <input className="w-1/2 border p-3 rounded-lg outline-none text-sm bg-white border-slate-200 text-slate-600 dark:bg-[#020617] dark:border-gray-700 dark:text-gray-300" placeholder="GitHub URL" value={proj.githubLink} onChange={e=>updateProject(i, 'githubLink', e.target.value)} />
                                         <input className="w-1/2 border p-3 rounded-lg outline-none text-sm bg-white border-slate-200 text-slate-600 dark:bg-[#020617] dark:border-gray-700 dark:text-gray-300" placeholder="Live URL" value={proj.liveLink} onChange={e=>updateProject(i, 'liveLink', e.target.value)} />
