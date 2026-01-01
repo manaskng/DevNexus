@@ -27,18 +27,16 @@ const UserProfileSchema = new mongoose.Schema({
   about: { type: String, default: "" }, 
   location: { type: String, default: "" },
   email: { type: String, default: "" },
-  linkedinProfile: { type: String, default: "" }, // NEW
-  portfolioUrl: { type: String, default: "" },    // NEW
+  linkedinProfile: { type: String, default: "" }, 
+  portfolioUrl: { type: String, default: "" },    
   
-  // --- STATS ---
+
   githubUsername: { type: String, default: "" },
   leetcodeUsername: { type: String, default: "" },
 
-  // --- ARRAYS ---
   skills: { type: [String], default: [] }, 
   achievements: { type: [String], default: [] }, 
   
-  // --- NESTED OBJECTS ---
   projects: [ProjectSchema],
   resumes: [ResumeSchema]
 

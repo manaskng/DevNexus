@@ -1,4 +1,3 @@
-// backend/models/Note.js
 
 import mongoose from "mongoose";
 

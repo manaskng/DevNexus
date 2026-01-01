@@ -15,7 +15,7 @@ const ProfileLinkSchema = new mongoose.Schema({
     required: true,
   },
   url: {
-    type: String, // The actual link to click
+    type: String, 
     required: true,
   },
   category: {
@@ -30,7 +30,6 @@ const ProfileLinkSchema = new mongoose.Schema({
   },
   badgeUrl: {
     type: String, 
-    // This allows you to paste a dynamic image link (like shields.io)
     default: "", 
   },
   isFavorite: {

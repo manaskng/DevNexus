@@ -6,30 +6,9 @@ import {
   FiGithub, FiLinkedin, FiExternalLink, FiCpu, FiAward, FiCode, FiShare2, FiCheck, FiDownload, FiMessageSquare, FiX, FiArrowRight, FiCamera, FiUploadCloud 
 } from "react-icons/fi";
 
-// --- CLOUDINARY CONFIGURATION ---
-// Replace these with your actual Cloudinary details
-const CLOUD_NAME = "your_cloud_name_here"; 
-const UPLOAD_PRESET = "your_upload_preset_here"; 
 
-const uploadImageToCloudinary = async (file) => {
-  if (!file) return null;
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", UPLOAD_PRESET);
 
-  try {
-    const { data } = await axios.post(
-      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-      formData
-    );
-    return data.secure_url;
-  } catch (error) {
-    console.error("Image upload failed", error);
-    throw error;
-  }
-};
-
-// --- HELPER: Get GitHub Image ---
+/
 const getProjectImage = (project) => {
   if (project.image && project.image.trim() !== "") return project.image;
   if (project.githubLink && project.githubLink.includes("github.com")) {
@@ -61,7 +40,7 @@ const BackgroundPattern = () => (
   </div>
 );
 
-// --- NEW COMPONENT: Empty State Feature Card ---
+
 const EmptyFeatureCard = ({ icon: Icon, title, desc, delay }) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
