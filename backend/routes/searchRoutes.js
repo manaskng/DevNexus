@@ -10,7 +10,7 @@ router.get("/", protect, async (req, res) => {
     if (!query || query.length < 1) return res.json({ notes: [], snippets: [] });
 
     try {
-        // --- 1. SEARCH SNIPPETS (Uses 'user' field) ---
+        
         const snippetsPromise = CodeSnippet.aggregate([
             {
                 $search: {
@@ -24,7 +24,7 @@ router.get("/", protect, async (req, res) => {
                         }],
                         filter: [{
                             equals: {
-                                path: "user", // CodeSnippet uses "user"
+                                path: "user", 
                                 value: req.user._id
                             }
                         }]
@@ -35,7 +35,7 @@ router.get("/", protect, async (req, res) => {
             { $project: { title: 1, language: 1, _id: 1 } }
         ]);
 
-        // --- 2. SEARCH NOTES (Uses 'createdBy' field) ---
+        
         let notes = await Note.aggregate([
             {
                 $search: {
@@ -48,7 +48,7 @@ router.get("/", protect, async (req, res) => {
                         minimumShouldMatch: 1,
                         filter: [{
                             equals: {
-                                path: "createdBy", // 🛑 FIXED: Changed "user" to "createdBy"
+                                path: "createdBy", 
                                 value: req.user._id
                             }
                         }]
@@ -59,11 +59,11 @@ router.get("/", protect, async (req, res) => {
             { $project: { title: 1, description: 1, _id: 1 } }
         ]);
 
-        // 🛑 FAIL-SAFE: If Atlas fails, use Regex (Fixed 'createdBy')
+       
         if (notes.length === 0) {
             console.log("Switching to Regex fallback for Notes...");
             notes = await Note.find({
-                createdBy: req.user._id, // 🛑 FIXED: Changed "user" to "createdBy"
+                createdBy: req.user._id,
                 $or: [
                     { title: { $regex: query, $options: "i" } }, 
                     { description: { $regex: query, $options: "i" } }

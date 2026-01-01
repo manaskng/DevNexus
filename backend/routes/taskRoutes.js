@@ -15,7 +15,7 @@ router.get("/", protect, async (req, res) => {
     }
 });
 
-// CREATE a new task
+
 router.post("/", protect, async (req, res) => {
     try {
         if (!req.body.content) {
@@ -32,7 +32,7 @@ router.post("/", protect, async (req, res) => {
     }
 });
 
-// UPDATE a task (e.g., mark as completed)
+// UPDATE a task 
 router.put("/:id", protect, async (req, res) => {
     try {
         const task = await Task.findById(req.params.id);
