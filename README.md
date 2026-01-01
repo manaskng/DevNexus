@@ -1,53 +1,67 @@
-# DevNexus 
+# DevNexus
 **The Ultimate Productivity Workspace for Developers.**
+
 DevNexus unifies the fragmented workflow of modern software engineers. It combines code snippet management, Kanban-style task tracking, rich-text note-taking, and dynamic developer portfolios into a single, cohesive ecosystem.
----
-
-##  Live Demo : https://devnexus-app.vercel.app
-
-* **Frontend:** [https://devnexus.vercel.app](https://devnexus-app.vercel.app) *(Update with your actual link)*
-* **Backend API:** [https://devnexus-api.onrender.com](https://mynanonotesapp.onrender.com) *(Update with your actual link)*
 
 ---
 
-##  Tech Stack
+## 🚀 Live Demo
+* **Frontend:** [https://devnexus-app.vercel.app](https://devnexus-app.vercel.app)
+* **Backend API:** [https://devnexus-api.onrender.com](https://devnexus-api.onrender.com)
+
+---
+
+## 🔌 APIs, Libraries & Integrations
+
+DevNexus leverages a suite of powerful APIs and specialized libraries to deliver a seamless user experience:
+
+### **External Data & Services**
+* **[SkillIcons.dev](https://skillicons.dev):** Dynamically renders high-quality SVG icons for the "Tech Stack" section by normalizing user input (e.g., mapping "C++" to `cpp`).
+* **[GitHub Open Graph API](https://opengraph.githubassets.com):** Automatically fetches social preview images from GitHub repositories to populate project cover images without user upload.
+* **[GitHub Profile Summary Cards](https://github-profile-summary-cards.vercel.app):** Visualizes real-time GitHub activity, stars, and commits via a dark-mode optimized dashboard card.
+* **[LeetCard API](https://leetcard.jacoblin.cool):** Fetches live LeetCode problem-solving statistics and global ranking for the career profile.
+* **[Brevo (Sendinblue)](https://www.brevo.com):** Powers the secure, production-grade "Forgot Password" email delivery system via SMTP.
+
+### **Core UI & Functionality**
+* **[TipTap (ProseMirror)](https://tiptap.dev):** The engine behind the headless Rich Text Editor, providing a Notion-like writing experience with extensive formatting support.
+* **[React Syntax Highlighter](https://github.com/react-syntax-highlighter):** Enables PrismJS-based syntax highlighting for the Code Snippet Library, supporting multiple languages.
+* **[Framer Motion](https://www.framer.com/motion/):** Powers the complex animations, including the 3D project card lift effects, empty state transitions, and modal interactions.
+
+---
+
+## 🛠 Tech Stack
 
 | Frontend          | Backend           | Database        | Authentication | Deployment & DevOps      |
 | ----------------- | ----------------- | --------------- | -------------- | ------------------------ |
 | ![React](https://img.shields.io/badge/-React-61DAFB?logo=react&logoColor=black) | ![Node.js](https://img.shields.io/badge/-Node.js-339933?logo=node.js&logoColor=white) | ![MongoDB](https://img.shields.io/badge/-MongoDB-47A248?logo=mongodb&logoColor=white) | ![JWT](https://img.shields.io/badge/-JWT-000000?logo=jsonwebtokens&logoColor=white) | ![Vercel](https://img.shields.io/badge/-Vercel-black?logo=vercel&logoColor=white) |
-| ![CSS3](https://img.shields.io/badge/-CSS3-1572B6?logo=css3&logoColor=white) | ![Express.js](https://img.shields.io/badge/-Express.js-000000?logo=express&logoColor=white) |                   | ![Nodemailer](https://img.shields.io/badge/-Nodemailer-44a6d1) | ![Render](https://img.shields.io/badge/-Render-46E3B7?logo=render&logoColor=white) |
-|                   |                   |                   | ![Bcrypt](https://img.shields.io/badge/-Bcrypt-blue)  | ![Docker](https://img.shields.io/badge/-Docker-2496ED?logo=docker&logoColor=white) |
-
+| ![Tailwind](https://img.shields.io/badge/-Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white) | ![Express.js](https://img.shields.io/badge/-Express.js-000000?logo=express&logoColor=white) |                 | ![Nodemailer](https://img.shields.io/badge/-Nodemailer-44a6d1) | ![Render](https://img.shields.io/badge/-Render-46E3B7?logo=render&logoColor=white) |
+| ![Framer](https://img.shields.io/badge/-Framer_Motion-0055FF?logo=framer&logoColor=white) |                   |                 | ![Bcrypt](https://img.shields.io/badge/-Bcrypt-blue)  | ![Docker](https://img.shields.io/badge/-Docker-2496ED?logo=docker&logoColor=white) |
 
 ---
 
-##  Key Features
+## 💎 Key Features
 
-### 1.  Secure Authentication & Recovery
+### 1. 🛡️ Secure Authentication & Recovery
+* **JWT Authentication:** Stateless session management with secure HTTP headers.
+* **Reliable Recovery:** Production-grade password reset flow using **Brevo (SMTP)** for high deliverability.
+* **Encryption:** Sensitive data hashed using `bcryptjs` before storage.
 
-* **JWT Authentication:** Stateless, secure session management.
-* **Password Reset Flow:** Production-grade "Forgot Password" system using **Brevo (SMTP)** to send secure, time-sensitive reset links.
-* **Encryption:** Passwords hashed with `bcryptjs`.
+### 2. 🧩 Code Vault (Snippet Library)
+* **Syntax Highlighting:** Store reusable algorithms with automatic language detection and PrismJS highlighting.
+* **Smart Search:** Instantly filter snippets by tags (e.g., `#dp`, `#recursion`) or title.
 
-### 2.  Code Vault (Snippet Library)
+### 3. 📝 Rich Text Notes
+* **Advanced Editor:** Built on **TipTap**, supporting bold, italics, code blocks, lists, and links.
+* **Dark Mode Native:** The editor uses `@tailwindcss/typography` to seamlessly adapt text styles between light and dark themes.
 
-* **Syntax Highlighting:** Store algorithms and patterns with multi-language support.
-* **Search & Tagging:** Instantly retrieve code using a robust filtering system.
+### 4. 📋 Task Command (Kanban)
+* **Kanban Board:** A drag-and-drop interface for managing engineering tasks.
+* **Visual States:** distinct visual indicators for *Todo*, *In-Progress*, and *Completed* items.
 
-### 3.  Rich Text Notes
-
-* **Advanced Editor:** Built with **Tiptap**, supporting bold, italics, code blocks, and lists.
-* **Dark Mode Optimized:** Editor styles automatically adapt to the global theme using `@tailwindcss/typography`.
-
-### 4.  Task Command (Kanban)
-
-* **Kanban Board:** Drag-and-drop interface for engineering tasks.
-* **Status Tracking:** Visual indicators for Todo, In-Progress, and Completed items.
-
-### 5.  Dynamic Career Profile
-
-* **Live Stats:** Integrates **GitHub REST API** and **LeetCode API** to fetch real-time contribution data.
-* **Resume Builder:** Auto-generates a shareable portfolio page based on your saved projects and skills.
+### 5. 🚀 Dynamic Career Profile
+* **Live Stats Aggregation:** Automatically pulls and visualizes data from **GitHub** and **LeetCode** APIs.
+* **Smart Portfolio:** Generates a public, shareable link (e.g., `/u/username`) that serves as a live resume for recruiters.
+* **Auto-Asset Generation:** Uses OpenGraph to generate project cover images automatically from GitHub repository links.
 
 ---
 
