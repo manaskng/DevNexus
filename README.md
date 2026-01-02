@@ -5,13 +5,13 @@ DevNexus unifies the fragmented workflow of modern software engineers. It combin
 
 ---
 
-## 🚀 Live Demo
+##  Live Demo
 * **Frontend:** [https://devnexus-app.vercel.app](https://devnexus-app.vercel.app)
 * **Backend API:** [https://devnexus-api.onrender.com](https://devnexus-api.onrender.com)
 
 ---
 
-## 🔌 APIs, Libraries & Integrations
+##  APIs, Libraries & Integrations
 
 DevNexus leverages a suite of powerful APIs and specialized libraries to deliver a seamless user experience:
 
@@ -41,24 +41,24 @@ DevNexus leverages a suite of powerful APIs and specialized libraries to deliver
 
 ## 💎 Key Features
 
-### 1. 🛡️ Secure Authentication & Recovery
+### 1.  Secure Authentication & Recovery
 * **JWT Authentication:** Stateless session management with secure HTTP headers.
 * **Reliable Recovery:** Production-grade password reset flow using **Brevo (SMTP)** for high deliverability.
 * **Encryption:** Sensitive data hashed using `bcryptjs` before storage.
 
-### 2. 🧩 Code Vault (Snippet Library)
+### 2.  Code Vault (Snippet Library)
 * **Syntax Highlighting:** Store reusable algorithms with automatic language detection and PrismJS highlighting.
 * **Smart Search:** Instantly filter snippets by tags (e.g., `#dp`, `#recursion`) or title.
 
-### 3. 📝 Rich Text Notes
+### 3.  Rich Text Notes
 * **Advanced Editor:** Built on **TipTap**, supporting bold, italics, code blocks, lists, and links.
 * **Dark Mode Native:** The editor uses `@tailwindcss/typography` to seamlessly adapt text styles between light and dark themes.
 
-### 4. 📋 Task Command (Kanban)
+### 4.  Task Command (Kanban)
 * **Kanban Board:** A drag-and-drop interface for managing engineering tasks.
 * **Visual States:** distinct visual indicators for *Todo*, *In-Progress*, and *Completed* items.
 
-### 5. 🚀 Dynamic Career Profile
+### 5.  Dynamic Career Profile
 * **Live Stats Aggregation:** Automatically pulls and visualizes data from **GitHub** and **LeetCode** APIs.
 * **Smart Portfolio:** Generates a public, shareable link (e.g., `/u/username`) that serves as a live resume for recruiters.
 * **Auto-Asset Generation:** Uses OpenGraph to generate project cover images automatically from GitHub repository links.
@@ -141,7 +141,7 @@ docker-compose up --build
 
 ---
 
-## 📝 API Endpoints
+##  API Endpoints
 
 The backend exposes a robust REST API. Here are examples of the primary routes:
 
