@@ -16,7 +16,6 @@ DevNexus unifies the fragmented workflow of modern software engineers. It combin
 
 ---
 ### Youtube  Video workflow Live:
-*Watch the full workflow demo:*
 > **[▶️ Click here to watch the full video on YouTube](https://youtu.be/EKsHeZQpwYA)**
 ![DevNexus_gif](https://github.com/user-attachments/assets/cf0da425-dae3-449b-b988-143cb4cbaf6a)
 
@@ -37,11 +36,9 @@ DevNexus unifies the fragmented workflow of modern software engineers. It combin
 * **JWT Authentication:** Stateless session management with secure HTTP headers.
 * **Reliable Recovery:** Production-grade password reset flow using **Brevo (SMTP)** for high deliverability.
 * **Encryption:** Sensitive data hashed using `bcryptjs` before storage.
-<img width="1912" height="826" alt="Screenshot 2025-12-17 204753" src="https://github.com/user-attachments/assets/4e764f6f-5272-4c48-b278-fdd65ab72e7b" />
 
 <br/>
-<img alt="Dashboard View" src="https://github.com/user-attachments/assets/3196daba-1fe9-4095-9a5d-39fa1db6f375" width="650" />
-
+<img width="1912" height="826" alt="Screenshot 2025-12-17 204753" src="https://github.com/user-attachments/assets/4e764f6f-5272-4c48-b278-fdd65ab72e7b" />
 <p align="left">
   <img alt="Login Form" src="https://github.com/user-attachments/assets/69588f0b-4cae-445b-b18c-f35b2fb12fb7" width="320" />
   &nbsp; &nbsp; <img alt="Forgot Password Form" src="https://github.com/user-attachments/assets/fd300ea4-def1-4f46-8606-ba7501302ecd" width="300" />
