@@ -1,6 +1,5 @@
 # DevNexus- 
 **The Ultimate Productivity Workspace for Developers.**
-**Live:https://devnexus-app.vercel.app**
 DevNexus unifies the fragmented workflow of modern software engineers. It combines code snippet management, Kanban-style task tracking, rich-text note-taking, and dynamic developer portfolios into a single, cohesive ecosystem.
 ---
 
@@ -14,7 +13,6 @@ DevNexus unifies the fragmented workflow of modern software engineers. It combin
 ---
 ### Youtube  Video workflow Live:
 *Watch the full workflow demo:*
-[![DevNexus Video Walkthrough](https://img.youtube.com/vi/EKsHeZQpwYA/maxresdefault.jpg)](https://youtu.be/EKsHeZQpwYA)
 > **[▶️ Click here to watch the full video on YouTube](https://youtu.be/EKsHeZQpwYA)**
 ![DevNexus_gif](https://github.com/user-attachments/assets/cf0da425-dae3-449b-b988-143cb4cbaf6a)
 
@@ -35,38 +33,51 @@ DevNexus unifies the fragmented workflow of modern software engineers. It combin
 * **JWT Authentication:** Stateless session management with secure HTTP headers.
 * **Reliable Recovery:** Production-grade password reset flow using **Brevo (SMTP)** for high deliverability.
 * **Encryption:** Sensitive data hashed using `bcryptjs` before storage.
-  <img width="1920" height="1080" alt="Screenshot (334)" src="https://github.com/user-attachments/assets/3196daba-1fe9-4095-9a5d-39fa1db6f375" />
-  <img width="725" height="761" alt="Screenshot 2025-12-17 221108" src="https://github.com/user-attachments/assets/69588f0b-4cae-445b-b18c-f35b2fb12fb7" />
-  <img width="683" height="633" alt="Screenshot 2025-12-17 221212" src="https://github.com/user-attachments/assets/fd300ea4-def1-4f46-8606-ba7501302ecd" />
+
+<br/>
+<img alt="Dashboard View" src="https://github.com/user-attachments/assets/3196daba-1fe9-4095-9a5d-39fa1db6f375" width="650" />
+
+<p align="left">
+  <img alt="Login Form" src="https://github.com/user-attachments/assets/69588f0b-4cae-445b-b18c-f35b2fb12fb7" width="320" />
+  &nbsp; &nbsp; <img alt="Forgot Password Form" src="https://github.com/user-attachments/assets/fd300ea4-def1-4f46-8606-ba7501302ecd" width="300" />
+</p>
 
 ### 2.  Code Vault (Snippet Library)
-  <img width="1889" height="866" alt="Screenshot 2025-12-18 133358" src="https://github.com/user-attachments/assets/60d00622-619b-46cb-aed9-957f162d506e" />
+<img alt="Snippet Library Light Mode" src="https://github.com/user-attachments/assets/60d00622-619b-46cb-aed9-957f162d506e" width="650" />
+
 * **Syntax Highlighting:** Store reusable algorithms with automatic language detection and PrismJS highlighting.
 * **Smart Search:** Instantly filter snippets by tags (e.g., `#dp`, `#recursion`) or title.
-  <img width="1895" height="902" alt="Screenshot 2026-01-04 214316" src="https://github.com/user-attachments/assets/20c45553-dd6d-48fb-8b6d-c60e473aa628" />
+
+<img alt="Snippet Library Dark Mode with Search" src="https://github.com/user-attachments/assets/20c45553-dd6d-48fb-8b6d-c60e473aa628" width="650" />
 
 
 ### 3.  Rich Text Notes
-  <img width="1886" height="858" alt="Screenshot 2025-12-18 133341" src="https://github.com/user-attachments/assets/69363887-24ff-452a-9649-25322d08ace3" />
+<img alt="Notes Editor Light Mode" src="https://github.com/user-attachments/assets/69363887-24ff-452a-9649-25322d08ace3" width="650" />
+
 * **Advanced Editor:** Built on **TipTap**, supporting bold, italics, code blocks, lists, and links.
 * **Dark Mode Native:** The editor uses `@tailwindcss/typography` to seamlessly adapt text styles between light and dark themes.
-  <img width="1897" height="893" alt="Screenshot 2026-01-04 214451" src="https://github.com/user-attachments/assets/871ebb95-0a1a-4aeb-997b-8c1199233fdf" />
-  <img width="456" height="329" alt="Screenshot 2025-12-18 132732" src="https://github.com/user-attachments/assets/80124a12-c21d-4877-83ce-72e441f3d382" />
 
- 
+<p align="left">
+<img alt="Notes Editor Dark Mode" src="https://github.com/user-attachments/assets/871ebb95-0a1a-4aeb-997b-8c1199233fdf" width="450" />
+&nbsp;
+<img alt="Editor Code Block Example" src="https://github.com/user-attachments/assets/80124a12-c21d-4877-83ce-72e441f3d382" width="250" />
+</p>
+
+
 ### 4.  Task Command (Kanban)
 * **Kanban Board:** A drag-and-drop interface for managing engineering tasks.
 * **Visual States:** distinct visual indicators for *Todo*, *In-Progress*, and *Completed* items.
-  <img width="1911" height="895" alt="Screenshot 2026-01-01 143152" src="https://github.com/user-attachments/assets/276a427b-df64-47f2-ae41-f9056fb5fb15" />
+
+<img alt="Kanban Board Dark Mode" src="https://github.com/user-attachments/assets/276a427b-df64-47f2-ae41-f9056fb5fb15" width="650" />
  
 ### 5.  Dynamic Career Profile
 * **Live Stats Aggregation:** Automatically pulls and visualizes data from **GitHub** and **LeetCode** APIs.
 * **Smart Portfolio:** Generates a public, shareable link (e.g., `/u/username`) that serves as a live resume for recruiters.
 * **Auto-Asset Generation:** Uses OpenGraph to generate project cover images automatically from GitHub repository links.
-<img width="1917" height="894" alt="Screenshot 2025-12-17 204527" src="https://github.com/user-attachments/assets/b1795180-5bf9-4182-89b7-9a7d4a6c1ac9" />
-<img width="1918" height="826" alt="Screenshot 2026-01-01 143242" src="https://github.com/user-attachments/assets/954d0734-d2e7-4fe8-905f-a3167461c501" />
-<img width="1919" height="817" alt="Screenshot 2026-01-01 143259" src="https://github.com/user-attachments/assets/8d8778da-0d37-4657-b845-5dd1099dda3c" />
 
+<img alt="Profile Header View" src="https://github.com/user-attachments/assets/b1795180-5bf9-4182-89b7-9a7d4a6c1ac9" width="600" />
+<img alt="Profile Skills and Projects" src="https://github.com/user-attachments/assets/954d0734-d2e7-4fe8-905f-a3167461c501" width="600" />
+<img alt="Profile Achievements View" src="https://github.com/user-attachments/assets/8d8778da-0d37-4657-b845-5dd1099dda3c" width="600" />
 ---
 
 ##  APIs, Libraries & Integrations
