@@ -1,7 +1,10 @@
 # DevNexus- 
 **The Ultimate Productivity Workspace for Developers.**
-DevNexus unifies the fragmented workflow of modern software engineers. It combines code snippet management, Kanban-style task tracking, rich-text note-taking, and dynamic developer portfolios into a single, cohesive ecosystem.
 ---
+DevNexus unifies the fragmented workflow of modern software engineers. It combines code snippet management, Kanban-style task tracking, rich-text note-taking, and dynamic developer portfolios into a single, cohesive ecosystem.
+![screen-capture (13)](https://github.com/user-attachments/assets/422ad9b0-42e6-4816-8ff3-c67ba8f933f4)
+---
+
 
 ## 🚀 Live Demo & Walkthrough
 ### 🌐 Deployment
@@ -33,6 +36,7 @@ DevNexus unifies the fragmented workflow of modern software engineers. It combin
 * **JWT Authentication:** Stateless session management with secure HTTP headers.
 * **Reliable Recovery:** Production-grade password reset flow using **Brevo (SMTP)** for high deliverability.
 * **Encryption:** Sensitive data hashed using `bcryptjs` before storage.
+<img width="1912" height="826" alt="Screenshot 2025-12-17 204753" src="https://github.com/user-attachments/assets/4e764f6f-5272-4c48-b278-fdd65ab72e7b" />
 
 <br/>
 <img alt="Dashboard View" src="https://github.com/user-attachments/assets/3196daba-1fe9-4095-9a5d-39fa1db6f375" width="650" />
