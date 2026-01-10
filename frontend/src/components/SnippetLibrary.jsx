@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FiPlus, FiCode, FiSearch, FiZap, FiTag, FiCpu, FiCopy, FiArrowRight } from "react-icons/fi";
-import { motion } from "framer-motion"; // Make sure to install framer-motion if not already
+import { motion } from "framer-motion";
 import SnippetCard from "./SnippetCard";
 
 // Top 10 Languages for the dropdown
@@ -10,7 +10,6 @@ const LANGUAGES = [
   "C", "C#", "Go", "Rust", "Swift"
 ];
 
-// --- MODAL COMPONENT (Unchanged functionality) ---
 const SnippetModal = ({ isOpen, onClose, onSave, snippetToEdit }) => {
   const [formData, setFormData] = useState({
     title: "", code: "", language: "C++", tags: "", timeComplexity: "", spaceComplexity: "", problemLink: ""
@@ -116,11 +115,10 @@ const SnippetModal = ({ isOpen, onClose, onSave, snippetToEdit }) => {
   );
 };
 
-// --- NEW COMPONENT: COOL EMPTY STATE ---
+// --- EMPTY STATE COMPONENT ---
 const EmptySnippetView = ({ onAdd }) => (
   <div className="flex flex-col xl:flex-row items-center justify-center gap-12 py-10 min-h-[60vh] max-w-6xl mx-auto">
     
-    {/* Left Side: Content */}
     <motion.div 
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
@@ -165,7 +163,6 @@ const EmptySnippetView = ({ onAdd }) => (
       </div>
     </motion.div>
 
-    {/* Right Side: Image Preview */}
     <motion.div 
       initial={{ opacity: 0, x: 20, rotate: 2 }}
       animate={{ opacity: 1, x: 0, rotate: 0 }}
@@ -173,17 +170,12 @@ const EmptySnippetView = ({ onAdd }) => (
       className="flex-1 w-full max-w-xl"
     >
       <div className="relative group">
-        {/* Glow Effect */}
         <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur-xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
-        
-        {/* The Image - Ensure slide-8.png is in your /public folder */}
         <img 
           src="/slide-8.png" 
           alt="Snippet Preview" 
           className="relative rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 w-full object-cover transform transition-transform duration-500 hover:scale-[1.02]"
         />
-        
-        {/* Floating Badge */}
         <div className="absolute -bottom-6 -right-6 bg-white dark:bg-[#1e293b] p-4 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 hidden sm:block">
            <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 font-bold">
@@ -207,6 +199,9 @@ function SnippetLibrary() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSnippet, setEditingSnippet] = useState(null); 
   const [search, setSearch] = useState("");
+  // NEW: State for expanded cards
+  const [expandedSnippetIds, setExpandedSnippetIds] = useState([]);
+
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
@@ -262,13 +257,19 @@ function SnippetLibrary() {
       } catch(e) { console.error(e); }
   };
 
+  // NEW: Toggle Expand Function
+  const toggleExpand = (id) => {
+    setExpandedSnippetIds(prev => 
+      prev.includes(id) ? prev.filter(tid => tid !== id) : [...prev, id]
+    );
+  };
+
   const filteredSnippets = snippets.filter(s => 
     s.title.toLowerCase().includes(search.toLowerCase()) || 
     s.tags.some(t => t.toLowerCase().includes(search.toLowerCase()))
   );
 
   return (
-    // p-3 md:p-8 for mobile responsiveness
     <div className="p-3 md:p-8 h-full flex flex-col">
       <div className="flex justify-between items-center mb-6">
         <div>
@@ -286,12 +287,6 @@ function SnippetLibrary() {
         </div>
       </div>
       
-      {/* LOGIC: 
-         1. If total snippets is 0 -> Show COOL Welcome Screen 
-         2. If search returns 0 -> Show simple "No matches" 
-         3. Else -> Show Grid 
-      */}
-      
       {snippets.length === 0 ? (
          <EmptySnippetView onAdd={handleOpenAdd} />
       ) : filteredSnippets.length === 0 ? (
@@ -300,16 +295,26 @@ function SnippetLibrary() {
            <button onClick={() => setSearch("")} className="text-blue-500 hover:underline mt-2">Clear Search</button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 pb-20">
-          {filteredSnippets.map(snippet => (
-            <div key={snippet._id} className="h-[500px]">
-              <SnippetCard 
-                snippet={snippet} 
-                onDelete={handleDelete} 
-                onEdit={handleOpenEdit} 
-              />
-            </div>
-          ))}
+        // UPDATED: Grid Layout to support resizing
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 pb-20 auto-rows-[500px]">
+          {filteredSnippets.map(snippet => {
+            const isExpanded = expandedSnippetIds.includes(snippet._id);
+            return (
+              <motion.div 
+                layout // Important for smooth grid reordering
+                key={snippet._id} 
+                className={`h-[500px] transition-all duration-300 ${isExpanded ? 'lg:col-span-2 xl:col-span-2' : 'col-span-1'}`}
+              >
+                <SnippetCard 
+                  snippet={snippet} 
+                  onDelete={handleDelete} 
+                  onEdit={handleOpenEdit} 
+                  isExpanded={isExpanded}
+                  onToggleExpand={toggleExpand}
+                />
+              </motion.div>
+            );
+          })}
         </div>
       )}
       
