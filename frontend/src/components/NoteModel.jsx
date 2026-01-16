@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { 
   FiSave, FiClock, FiImage, FiLink, FiBold, FiItalic, 
-  FiCode, FiList, FiType, FiLoader, FiAlignLeft, FiAlignCenter, FiAlignRight, FiX 
+  FiCode, FiList, FiType, FiLoader, FiAlignLeft, FiAlignCenter, FiAlignRight 
 } from "react-icons/fi";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -11,7 +11,7 @@ import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
 
-// --- PROFESSIONAL TOOLBAR COMPONENT ---
+// --- PROFESSIONAL TOOLBAR ---
 const MenuBar = ({ editor, onImageUpload, isUploading }) => {
   if (!editor) return null;
 
@@ -69,7 +69,7 @@ const MenuBar = ({ editor, onImageUpload, isUploading }) => {
         </button>
       </div>
 
-      {/* Structure */}
+      {/* Lists */}
       <div className="flex gap-1 pr-3 border-r border-slate-200 dark:border-slate-800 mr-2">
         <button onClick={() => editor.chain().focus().toggleBulletList().run()} className={btnClass(editor.isActive('bulletList'))} title="Bullet List">
             <FiList size={18} />
@@ -79,12 +79,18 @@ const MenuBar = ({ editor, onImageUpload, isUploading }) => {
         </button>
       </div>
 
-      {/* Rich Media */}
+      {/* Media */}
       <div className="flex gap-1">
         <button onClick={setLink} className={btnClass(editor.isActive('link'))} title="Add Link">
             <FiLink size={18} />
         </button>
-        <button onClick={handleImageClick} className={btnClass(false)} title="Upload Image" disabled={isUploading}>
+        <button 
+            onClick={handleImageClick} 
+            className={btnClass(false)} 
+
+            title="Upload Image (Max 5MB)" 
+            disabled={isUploading}
+        >
             {isUploading ? <FiLoader className="animate-spin" size={18}/> : <FiImage size={18} />}
         </button>
       </div>
@@ -92,7 +98,7 @@ const MenuBar = ({ editor, onImageUpload, isUploading }) => {
   );
 };
 
-// --- MAIN DOC EDITOR COMPONENT ---
+// --- MAIN DOC EDITOR ---
 const NoteModel = ({ isOpen, onClose, note, onSave }) => {
   const [title, setTitle] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -100,7 +106,7 @@ const NoteModel = ({ isOpen, onClose, note, onSave }) => {
 
   const editor = useEditor({
     extensions: [
-      StarterKit, // Contains core nodes (bold, italic, code, etc)
+      StarterKit,
       Image.configure({
         inline: true,
         allowBase64: true,
@@ -128,7 +134,6 @@ const NoteModel = ({ isOpen, onClose, note, onSave }) => {
     },
   });
 
-  // Sync state when opening an existing note
   useEffect(() => {
     if (note && editor) {
       setTitle(note.title);
@@ -139,9 +144,16 @@ const NoteModel = ({ isOpen, onClose, note, onSave }) => {
     }
   }, [note, isOpen, editor]);
 
-  // UPLOAD HANDLER (Uses your backend /api/upload)
+  // 🔴 FIX: Added Client-Side Size Validation (5MB)
   const handleImageUpload = useCallback(async (file) => {
     if (!file) return;
+
+    // 1. Check File Size (5MB = 5 * 1024 * 1024 bytes)
+    if (file.size > 5 * 1024 * 1024) {
+        alert("File is too large. Please upload an image smaller than 5MB.");
+        return;
+    }
+
     setIsUploading(true);
     
     const formData = new FormData();
@@ -159,17 +171,16 @@ const NoteModel = ({ isOpen, onClose, note, onSave }) => {
       });
       
       const imageUrl = res.data.url;
-      // Insert image at current cursor position
       editor.chain().focus().setImage({ src: imageUrl }).run();
     } catch (err) {
       console.error("Image upload failed", err);
-      alert("Failed to upload image. Check server logs.");
+      // Give a better error message
+      alert("Upload failed. Please check your internet connection.");
     } finally {
       setIsUploading(false);
     }
   }, [editor]);
 
-  // SAVE HANDLER (Performs API call here to get the _id back)
   const handleSubmit = async () => {
     if (!title.trim()) return alert("Document title is required.");
     setIsSaving(true);
@@ -185,25 +196,22 @@ const NoteModel = ({ isOpen, onClose, note, onSave }) => {
         let savedData;
 
         if (note && note._id) {
-            // UPDATE existing
             const res = await axios.put(`${API_URL}/api/notes/${note._id}`, noteData, { 
                 headers: { Authorization: `Bearer ${token}` }
             });
             savedData = res.data;
         } else {
-            // CREATE new
             const res = await axios.post(`${API_URL}/api/notes`, noteData, { 
                 headers: { Authorization: `Bearer ${token}` }
             });
             savedData = res.data;
         }
 
-        // Send full object back to List (fixes 'undefined' ID bug)
         onSave(savedData); 
         onClose();
     } catch (error) {
         console.error("Save failed", error);
-        alert("Failed to save document. Please try again.");
+        alert("Failed to save document.");
     } finally {
         setIsSaving(false);
     }
@@ -213,7 +221,6 @@ const NoteModel = ({ isOpen, onClose, note, onSave }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
-      {/* Modal Container */}
       <div className="bg-white dark:bg-[#0f172a] w-full max-w-5xl h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-200 dark:border-slate-800 transition-colors">
         
         {/* Header */}
@@ -244,10 +251,9 @@ const NoteModel = ({ isOpen, onClose, note, onSave }) => {
           </div>
         </div>
 
-        {/* Content Area */}
+        {/* Content */}
         <div className="flex-1 overflow-y-auto custom-scrollbar p-8 md:px-20 bg-white dark:bg-[#0f172a]">
           <div className="max-w-3xl mx-auto">
-            {/* Title Input */}
             <input 
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -255,8 +261,6 @@ const NoteModel = ({ isOpen, onClose, note, onSave }) => {
               className="w-full text-4xl md:text-5xl font-black text-slate-900 dark:text-white bg-transparent border-none outline-none placeholder:text-slate-200 dark:placeholder:text-slate-800 mb-8 leading-tight"
               autoFocus
             />
-
-            {/* Toolbar & Editor */}
             <MenuBar editor={editor} onImageUpload={handleImageUpload} isUploading={isUploading} />
             <div className="mt-2 min-h-[500px]">
                 <EditorContent editor={editor} />
