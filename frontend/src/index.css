@@ -67,3 +67,16 @@
 html {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+/* TipTap ProseMirror Fixes */
+.ProseMirror {
+  white-space: pre-wrap;
+  outline: none;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adb5bd;
+  pointer-events: none;
+  height: 0;
+}

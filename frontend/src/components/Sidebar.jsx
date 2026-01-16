@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { 
-  FiFileText, FiCode, FiUser, FiCheckSquare, FiTrash2, FiPlus, FiSquare, FiLayers, FiLayout 
+  FiFileText, FiCode, FiUser, FiCheckSquare, FiTrash2, FiPlus, FiLayers 
 } from "react-icons/fi";
 
 function Sidebar({ activeTab, setActiveTab }) {
@@ -40,7 +40,6 @@ function Sidebar({ activeTab, setActiveTab }) {
         { content: tempTask.content },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      // Background fetch to sync IDs if needed, or just leave optimistic
     } catch (error) {
       console.error("Add task failed");
     }
@@ -71,7 +70,7 @@ function Sidebar({ activeTab, setActiveTab }) {
         className={`
           group w-full flex items-center justify-between px-4 py-3.5 rounded-xl transition-all duration-200 mb-1.5
           ${isActive 
-            ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" 
+            ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/30" 
             : "text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white"
           }
         `}
@@ -95,7 +94,7 @@ function Sidebar({ activeTab, setActiveTab }) {
       {/* 1. HEADER & BRAND */}
       <div className="p-6 pb-4">
         <div className="flex items-center gap-3 mb-8 px-2">
-           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold shadow-md">
+           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold shadow-md">
              D
            </div>
            <div>
@@ -110,9 +109,8 @@ function Sidebar({ activeTab, setActiveTab }) {
           <div>
             <h3 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3 px-4">Workspace</h3>
             <nav>
-              {/* Optional: Dashboard Home */}
-              {/* <NavButton id="dashboard" icon={FiLayout} label="Dashboard" /> */} 
-              <NavButton id="notes" icon={FiFileText} label="My Notes" />
+              {/* UPDATED: Label changed from 'My Notes' to 'DevDocs' */}
+              <NavButton id="notes" icon={FiFileText} label="DevDocs" />
               <NavButton id="tasks" icon={FiLayers} label="Task Board" />
               <NavButton id="snippets" icon={FiCode} label="Code Vault" />
             </nav>
@@ -128,66 +126,66 @@ function Sidebar({ activeTab, setActiveTab }) {
         </div>
       </div>
 
-      {/* 3. WIDGET: DAILY SCRATCHPAD (Pushed to bottom) */}
+      {/* 3. WIDGET: DAILY SCRATCHPAD */}
       <div className="mt-auto p-4">
         <div className="bg-slate-50 dark:bg-[#151b2e] rounded-2xl border border-slate-200 dark:border-white/5 overflow-hidden flex flex-col shadow-inner max-h-[35vh]">
           
           {/* Widget Header */}
           <div className="px-4 py-3 border-b border-slate-200 dark:border-white/5 flex justify-between items-center bg-white dark:bg-white/5">
-             <span className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-2">
-               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 
-               Quick Focus
-             </span>
-             <span className="text-[10px] bg-slate-100 dark:bg-white/10 px-1.5 py-0.5 rounded text-slate-500 dark:text-slate-400 font-mono">
-               {tasks.filter(t => !t.isCompleted).length}
-             </span>
+              <span className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 
+                Quick Focus
+              </span>
+              <span className="text-[10px] bg-slate-100 dark:bg-white/10 px-1.5 py-0.5 rounded text-slate-500 dark:text-slate-400 font-mono">
+                {tasks.filter(t => !t.isCompleted).length}
+              </span>
           </div>
 
           {/* Mini Task List */}
           <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
-             {tasks.length === 0 ? (
+              {tasks.length === 0 ? (
                 <div className="text-center py-6">
                    <p className="text-[10px] text-slate-400">No active tasks</p>
                 </div>
-             ) : (
+              ) : (
                 tasks.map(task => (
                   <div 
                     key={task._id} 
                     className="group flex items-center gap-3 p-2 rounded-lg hover:bg-white dark:hover:bg-white/10 border border-transparent hover:border-slate-100 dark:hover:border-white/5 transition-all cursor-pointer"
                     onClick={() => toggleTask(task._id, task.isCompleted)}
                   >
-                     <div className={`
-                       w-4 h-4 rounded border flex items-center justify-center transition-colors 
-                       ${task.isCompleted ? 'bg-emerald-500 border-emerald-500' : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-transparent'}
-                     `}>
-                        {task.isCompleted && <FiCheckSquare size={10} className="text-white" />}
-                     </div>
-                     <span className={`text-xs truncate flex-1 ${task.isCompleted ? 'text-slate-400 line-through decoration-slate-300' : 'text-slate-600 dark:text-slate-300'}`}>
-                       {task.content}
-                     </span>
-                     {/* Mini Delete on Hover */}
-                     <button 
-                       onClick={(e) => { e.stopPropagation(); deleteTask(task._id); }}
-                       className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-opacity"
-                     >
-                       <FiTrash2 size={12} />
-                     </button>
+                      <div className={`
+                        w-4 h-4 rounded border flex items-center justify-center transition-colors 
+                        ${task.isCompleted ? 'bg-emerald-500 border-emerald-500' : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-transparent'}
+                      `}>
+                         {task.isCompleted && <FiCheckSquare size={10} className="text-white" />}
+                      </div>
+                      <span className={`text-xs truncate flex-1 ${task.isCompleted ? 'text-slate-400 line-through decoration-slate-300' : 'text-slate-600 dark:text-slate-300'}`}>
+                        {task.content}
+                      </span>
+                      {/* Mini Delete on Hover */}
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); deleteTask(task._id); }}
+                        className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-opacity"
+                      >
+                        <FiTrash2 size={12} />
+                      </button>
                   </div>
                 ))
-             )}
+              )}
           </div>
 
           {/* Mini Input */}
           <form onSubmit={handleAddTask} className="p-2 border-t border-slate-200 dark:border-white/5 bg-white dark:bg-[#0b1121]">
-             <div className="flex items-center gap-2 bg-slate-50 dark:bg-[#1e293b] rounded-lg px-3 py-2 border border-transparent focus-within:border-blue-500 focus-within:bg-white dark:focus-within:bg-[#151b2e] transition-all">
-                <FiPlus size={14} className="text-slate-400 shrink-0" />
-                <input 
-                  value={newTask}
-                  onChange={(e) => setNewTask(e.target.value)}
-                  placeholder="Add quick task..."
-                  className="bg-transparent w-full text-xs outline-none text-slate-700 dark:text-white placeholder:text-slate-400"
-                />
-             </div>
+              <div className="flex items-center gap-2 bg-slate-50 dark:bg-[#1e293b] rounded-lg px-3 py-2 border border-transparent focus-within:border-indigo-500 focus-within:bg-white dark:focus-within:bg-[#151b2e] transition-all">
+                 <FiPlus size={14} className="text-slate-400 shrink-0" />
+                 <input 
+                   value={newTask}
+                   onChange={(e) => setNewTask(e.target.value)}
+                   placeholder="Add quick task..."
+                   className="bg-transparent w-full text-xs outline-none text-slate-700 dark:text-white placeholder:text-slate-400"
+                 />
+              </div>
           </form>
         </div>
       </div>

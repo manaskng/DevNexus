@@ -1,112 +1,272 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import RichTextEditor from "./RichTextEditor";
-import { FiX } from "react-icons/fi";
+import { 
+  FiSave, FiClock, FiImage, FiLink, FiBold, FiItalic, 
+  FiCode, FiList, FiType, FiLoader, FiAlignLeft, FiAlignCenter, FiAlignRight, FiX 
+} from "react-icons/fi";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Image from "@tiptap/extension-image";
+import Link from "@tiptap/extension-link";
+import Placeholder from "@tiptap/extension-placeholder";
+import TextAlign from "@tiptap/extension-text-align";
 
-function NoteModel({ isOpen, onClose, note, onSave }) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+// --- PROFESSIONAL TOOLBAR COMPONENT ---
+const MenuBar = ({ editor, onImageUpload, isUploading }) => {
+  if (!editor) return null;
 
-  useEffect(() => {
-    if (isOpen) {
-      setTitle(note ? note.title : "");
-      setDescription(note ? note.description : "");
-      setError("");
+  const setLink = () => {
+    const previousUrl = editor.getAttributes('link').href;
+    const url = window.prompt('URL', previousUrl);
+    if (url === null) return;
+    if (url === '') {
+      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+      return;
     }
-  }, [isOpen, note]);
+    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const handleImageClick = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (file) await onImageUpload(file);
+    };
+    input.click();
+  };
+
+  const btnClass = (isActive) => 
+    `p-2 rounded-lg text-sm font-bold transition-all ${isActive ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'}`;
+
+  return (
+    <div className="flex flex-wrap gap-1 mb-6 border-b border-slate-200 dark:border-slate-800 pb-3 sticky top-0 bg-white dark:bg-[#0f172a] z-10">
+      
+      {/* Text Styling */}
+      <div className="flex gap-1 pr-3 border-r border-slate-200 dark:border-slate-800 mr-2">
+        <button onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className={btnClass(editor.isActive('heading', { level: 2 }))} title="Heading">
+            <FiType size={18} />
+        </button>
+        <button onClick={() => editor.chain().focus().toggleBold().run()} className={btnClass(editor.isActive('bold'))} title="Bold">
+            <FiBold size={18} />
+        </button>
+        <button onClick={() => editor.chain().focus().toggleItalic().run()} className={btnClass(editor.isActive('italic'))} title="Italic">
+            <FiItalic size={18} />
+        </button>
+      </div>
+
+      {/* Alignment */}
+      <div className="flex gap-1 pr-3 border-r border-slate-200 dark:border-slate-800 mr-2">
+        <button onClick={() => editor.chain().focus().setTextAlign('left').run()} className={btnClass(editor.isActive({ textAlign: 'left' }))} title="Align Left">
+            <FiAlignLeft size={18} />
+        </button>
+        <button onClick={() => editor.chain().focus().setTextAlign('center').run()} className={btnClass(editor.isActive({ textAlign: 'center' }))} title="Align Center">
+            <FiAlignCenter size={18} />
+        </button>
+        <button onClick={() => editor.chain().focus().setTextAlign('right').run()} className={btnClass(editor.isActive({ textAlign: 'right' }))} title="Align Right">
+            <FiAlignRight size={18} />
+        </button>
+      </div>
+
+      {/* Structure */}
+      <div className="flex gap-1 pr-3 border-r border-slate-200 dark:border-slate-800 mr-2">
+        <button onClick={() => editor.chain().focus().toggleBulletList().run()} className={btnClass(editor.isActive('bulletList'))} title="Bullet List">
+            <FiList size={18} />
+        </button>
+        <button onClick={() => editor.chain().focus().toggleCodeBlock().run()} className={btnClass(editor.isActive('codeBlock'))} title="Code Block">
+            <FiCode size={18} />
+        </button>
+      </div>
+
+      {/* Rich Media */}
+      <div className="flex gap-1">
+        <button onClick={setLink} className={btnClass(editor.isActive('link'))} title="Add Link">
+            <FiLink size={18} />
+        </button>
+        <button onClick={handleImageClick} className={btnClass(false)} title="Upload Image" disabled={isUploading}>
+            {isUploading ? <FiLoader className="animate-spin" size={18}/> : <FiImage size={18} />}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// --- MAIN DOC EDITOR COMPONENT ---
+const NoteModel = ({ isOpen, onClose, note, onSave }) => {
+  const [title, setTitle] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit, // Contains core nodes (bold, italic, code, etc)
+      Image.configure({
+        inline: true,
+        allowBase64: true,
+        HTMLAttributes: {
+          class: 'rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 my-6 max-w-full h-auto',
+        },
+      }),
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+          class: 'text-indigo-500 hover:underline cursor-pointer',
+        },
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph', 'image'],
+      }),
+      Placeholder.configure({
+        placeholder: 'Start documenting technical specs, architecture decisions, or meeting notes...',
+      }),
+    ],
+    editorProps: {
+      attributes: {
+        class: "prose prose-slate dark:prose-invert max-w-none focus:outline-none min-h-[400px] prose-p:leading-relaxed prose-headings:font-bold prose-code:text-indigo-500 prose-pre:bg-slate-900 prose-pre:text-slate-100",
+      },
+    },
+  });
+
+  // Sync state when opening an existing note
+  useEffect(() => {
+    if (note && editor) {
+      setTitle(note.title);
+      editor.commands.setContent(note.description);
+    } else if (editor && !note) {
+      setTitle("");
+      editor.commands.setContent("");
+    }
+  }, [note, isOpen, editor]);
+
+  // UPLOAD HANDLER (Uses your backend /api/upload)
+  const handleImageUpload = useCallback(async (file) => {
+    if (!file) return;
+    setIsUploading(true);
+    
+    const formData = new FormData();
+    formData.append("file", file);
+
     try {
       const token = localStorage.getItem("token");
-      const payload = { title, description }; // No tags logic here
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      const baseURL = import.meta.env.VITE_API_URL;
-
-      let savedNote;
-      if (note) {
-        const { data } = await axios.put(`${baseURL}/api/notes/${note._id}`, payload, config);
-        savedNote = data;
-      } else {
-        const { data } = await axios.post(`${baseURL}/api/notes`, payload, config);
-        savedNote = data;
-      }
-
-      onSave(savedNote);
-      onClose();
+      const API_URL = import.meta.env.VITE_API_URL;
+      
+      const res = await axios.post(`${API_URL}/api/upload`, formData, {
+        headers: { 
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}` 
+        }
+      });
+      
+      const imageUrl = res.data.url;
+      // Insert image at current cursor position
+      editor.chain().focus().setImage({ src: imageUrl }).run();
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to save note.");
+      console.error("Image upload failed", err);
+      alert("Failed to upload image. Check server logs.");
     } finally {
-      setLoading(false);
+      setIsUploading(false);
+    }
+  }, [editor]);
+
+  // SAVE HANDLER (Performs API call here to get the _id back)
+  const handleSubmit = async () => {
+    if (!title.trim()) return alert("Document title is required.");
+    setIsSaving(true);
+
+    const noteData = { 
+      title, 
+      description: editor.getHTML() 
+    };
+
+    try {
+        const token = localStorage.getItem("token");
+        const API_URL = import.meta.env.VITE_API_URL;
+        let savedData;
+
+        if (note && note._id) {
+            // UPDATE existing
+            const res = await axios.put(`${API_URL}/api/notes/${note._id}`, noteData, { 
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            savedData = res.data;
+        } else {
+            // CREATE new
+            const res = await axios.post(`${API_URL}/api/notes`, noteData, { 
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            savedData = res.data;
+        }
+
+        // Send full object back to List (fixes 'undefined' ID bug)
+        onSave(savedData); 
+        onClose();
+    } catch (error) {
+        console.error("Save failed", error);
+        alert("Failed to save document. Please try again.");
+    } finally {
+        setIsSaving(false);
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm animate-fade-in">
-      {/* FIXED: Added dark:bg-[#0f172a] */}
-      <div className="bg-white dark:bg-[#0f172a] rounded-xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[90vh] overflow-hidden transition-colors duration-300">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
+      {/* Modal Container */}
+      <div className="bg-white dark:bg-[#0f172a] w-full max-w-5xl h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-200 dark:border-slate-800 transition-colors">
         
         {/* Header */}
-        {/* FIXED: Added dark:border-white/10 and dark:bg-[#1e293b]/50 */}
-        <div className="p-5 border-b border-gray-200 dark:border-white/10 flex justify-between items-center bg-gray-50/80 dark:bg-[#1e293b]/50">
-           <h2 className="text-xl font-bold text-gray-800 dark:text-white">
-             {note ? "Edit Note" : "Create New Note"}
-           </h2>
-           <button 
-             onClick={onClose} 
-             className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
-           >
-             <FiX size={24}/>
-           </button>
-        </div>
-
-        {error && <div className="bg-red-50 dark:bg-red-500/10 text-red-500 dark:text-red-400 px-6 py-3 text-sm border-b border-red-100 dark:border-red-500/20">{error}</div>}
-
-        <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden p-6 space-y-5">
-          {/* TITLE INPUT - FIXED DARK MODE */}
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Note Title"
-            required
-            className="w-full px-4 py-3 bg-slate-50 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 font-bold text-lg placeholder-gray-400 transition-all 
-            dark:bg-[#1e293b] dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
-          />
-          
-          {/* RICH TEXT EDITOR CONTAINER - FIXED DARK MODE */}
-          <div className="flex-1 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg focus-within:ring-2 focus-within:ring-blue-500/20 transition-all bg-white dark:bg-[#1e293b]">
-            <RichTextEditor
-              content={description}
-              onChange={(newContent) => setDescription(newContent)}
-            />
+        <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-white dark:bg-[#0f172a]">
+          <div className="flex flex-col">
+             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+               {note ? "Editing Document" : "Drafting New Doc"}
+             </span>
+             <div className="flex items-center gap-2 text-xs text-slate-500">
+               <FiClock /> <span>{note ? "Synced" : "Unsaved Changes"}</span>
+             </div>
           </div>
-
-          <div className="flex justify-end space-x-3 pt-2">
-            <button
-              onClick={onClose}
-              type="button"
-              className="px-5 py-2.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg font-medium transition-colors"
+          <div className="flex gap-3">
+            <button 
+                onClick={onClose} 
+                className="px-4 py-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors"
             >
               Cancel
             </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            <button 
+                onClick={handleSubmit} 
+                disabled={isSaving}
+                className="flex items-center gap-2 px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold uppercase tracking-wider shadow-md transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "Saving..." : (note ? "Update Note" : "Create Note")}
+              {isSaving ? <FiLoader className="animate-spin"/> : <FiSave />} 
+              {isSaving ? "Saving..." : "Save Doc"}
             </button>
           </div>
-        </form>
+        </div>
+
+        {/* Content Area */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-8 md:px-20 bg-white dark:bg-[#0f172a]">
+          <div className="max-w-3xl mx-auto">
+            {/* Title Input */}
+            <input 
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Untitled Document"
+              className="w-full text-4xl md:text-5xl font-black text-slate-900 dark:text-white bg-transparent border-none outline-none placeholder:text-slate-200 dark:placeholder:text-slate-800 mb-8 leading-tight"
+              autoFocus
+            />
+
+            {/* Toolbar & Editor */}
+            <MenuBar editor={editor} onImageUpload={handleImageUpload} isUploading={isUploading} />
+            <div className="mt-2 min-h-[500px]">
+                <EditorContent editor={editor} />
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );
-}
+};
 
 export default NoteModel;

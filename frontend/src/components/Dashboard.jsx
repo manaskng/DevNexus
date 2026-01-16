@@ -3,9 +3,7 @@ import { FiFileText, FiCode, FiUser, FiGrid, FiLayers } from "react-icons/fi";
 import NoteList from "./NoteList";
 import SnippetLibrary from "./SnippetLibrary"; 
 import ProfileManager from "./ProfileManager"; 
-import TaskBoard from "./TaskBoard"; // <--- 1. UNCOMMENTED THIS
-
-// Helper Component for Sidebar Items
+import TaskBoard from "./TaskBoard"; 
 const NavItem = ({ id, icon: Icon, label, activeTab, setActiveTab }) => {
   const isActive = activeTab === id;
   return (
@@ -49,7 +47,7 @@ function Dashboard() {
         </div>
 
         <div className="flex-1 py-6 px-3 space-y-2 overflow-y-auto custom-scrollbar">
-          <NavItem id="notes" icon={FiFileText} label="Notes" activeTab={activeTab} setActiveTab={setActiveTab} />
+          <NavItem id="notes" icon={FiFileText} label="DevDocs" activeTab={activeTab} setActiveTab={setActiveTab} />
           <NavItem id="snippets" icon={FiCode} label="Code Library" activeTab={activeTab} setActiveTab={setActiveTab} />
           
           {/* 2. UNCOMMENTED THIS */}

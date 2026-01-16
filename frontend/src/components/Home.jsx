@@ -131,7 +131,7 @@ function Home() {
       {/* Header & Search */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">My Notes</h1>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">DevDocs</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">
             {notes.length} notes found
           </p>
@@ -168,8 +168,8 @@ function Home() {
         </div>
       ) : (
         <div className="flex-1 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 bg-slate-50 dark:bg-white/5 rounded-2xl border-2 border-dashed border-gray-200 dark:border-white/10 m-4 py-16">
-          <h2 className="text-2xl font-semibold text-gray-500 dark:text-gray-400">No notes yet!</h2>
-          <p className="mt-2 text-sm">Click the + button to create your first note.</p>
+          <h2 className="text-2xl font-semibold text-gray-500 dark:text-gray-400">No Documents or Research Projects yet!</h2>
+          <p className="mt-2 text-sm">Click the + button to create your first Project Documentation.</p>
         </div>
       )}
     </div>

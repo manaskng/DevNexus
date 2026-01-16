@@ -2,7 +2,11 @@ import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
-import cors from "cors";   
+import cors from "cors";
+import { v2 as cloudinary } from "cloudinary";
+import multer from "multer";
+import fs from "fs"; 
+import os from "os"; 
 
 import { connect } from "./config/db.js";
 import authRoutes from "./routes/auth.js";
@@ -13,20 +17,16 @@ import codeSnippetRoutes from "./routes/codeSnippetRoutes.js";
 import profileLinkRoutes from "./routes/profileLinkRoutes.js";
 import searchRoutes from "./routes/searchRoutes.js";
 
-// ES Module equivalent of __filename and __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load environment variables
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(express.json());
 
-// Enable CORS
 app.use(cors({
   origin: [
     "http://localhost:5173",               
@@ -36,10 +36,21 @@ app.use(cors({
   credentials: true
 }));
 
-// DB Connection
+// UPDATED: Reads split variables from .env
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true
+});
+
+const upload = multer({ 
+  dest: os.tmpdir(), 
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+});
+
 connect();
 
-// Routes
 app.use("/api/users", authRoutes);
 app.use("/api/notes", notesRoutes);
 app.use("/api/tasks", taskRoutes); 
@@ -47,11 +58,36 @@ app.use("/api/snippets", codeSnippetRoutes);
 app.use("/api/profiles", profileLinkRoutes);
 app.use("/api/user-profile", userProfileRoutes); 
 app.use("/api/search", searchRoutes);
+
+app.post("/api/upload", upload.single("file"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file provided" });
+    }
+
+    console.log("File received:", req.file.path);
+
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "devdocs",
+      resource_type: "image"
+    });
+    
+    fs.unlink(req.file.path, (err) => {
+      if (err) console.error("Failed to delete temp file:", err);
+    });
+
+    res.json({ url: result.secure_url });
+
+  } catch (error) {
+    console.error("Cloudinary Upload Error:", error);
+    res.status(500).json({ message: "Image upload failed", error: error.message });
+  }
+});
+
 app.get("/ping", (req, res) => {
   res.status(200).send("Server Ok");
 });
 
-// Start server
 app.listen(PORT, () => {
   console.log(`Server connected at port: ${PORT}`);
 });
