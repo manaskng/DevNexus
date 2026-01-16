@@ -47,10 +47,12 @@ DevNexus unifies the fragmented workflow of modern software engineers. It combin
 ### 2.  Code Vault (Snippet Library)
 <img alt="Snippet Library Light Mode" src="https://github.com/user-attachments/assets/60d00622-619b-46cb-aed9-957f162d506e" width="650" />
 
-* **Syntax Highlighting:** Store reusable algorithms with automatic language detection and PrismJS highlighting.
+* **Syntax Highlighting:** Store reusable algorithms with automatic language detection and using *react-syntax-highligher*.
 * **Smart Search:** Instantly filter snippets by tags (e.g., `#dp`, `#recursion`) or title.
 
 <img alt="Snippet Library Dark Mode with Search" src="https://github.com/user-attachments/assets/20c45553-dd6d-48fb-8b6d-c60e473aa628" width="650" />
+* **Resizable button** : to improve developer Experience
+  <img width="1585" height="806" alt="image" src="https://github.com/user-attachments/assets/fbe46943-708d-41a4-a914-3532abb4d511" />
 
 
 ### 3.  Rich Text Notes
