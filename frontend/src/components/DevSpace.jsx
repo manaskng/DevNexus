@@ -66,9 +66,7 @@ function DevSpace() {
   const [aiResponse, setAiResponse] = useState(null);
   const [terminalOutput, setTerminalOutput] = useState([]); 
 
-  // =========================================
-  // 2. REFS (For Event Listeners)
-  // =========================================
+
   const roomIdRef = useRef("");
   const userNameRef = useRef("");
   const terminalRef = useRef(null);
@@ -101,7 +99,7 @@ function DevSpace() {
     };
 
     const onDisconnect = () => {
-      console.log("❌ Socket Disconnected");
+      console.log(" Socket Disconnected");
       setIsConnected(false);
     };
 
@@ -173,9 +171,8 @@ function DevSpace() {
     }
   }, [terminalOutput, aiResponse, isAiLoading]);
 
-  // =========================================
-  // 4. ACTION HANDLERS
-  // =========================================
+  //  ACTION HANDLERS
+  
 
   // --- Session Management ---
   const joinSession = (idToJoin) => {
@@ -357,7 +354,7 @@ Please try again in a few moments.
 
     } catch (error) {
       console.error("Save Error:", error);
-      alert("❌ Failed to save snippet. Please check your connection.");
+      alert(" Failed to save snippet. Please check your connection.");
     } finally {
       setIsSaving(false);
     }
@@ -365,7 +362,7 @@ Please try again in a few moments.
 
 
   // =========================================
-  // 5. RENDER LOBBY (The Premium UI)
+  // . RENDER LOBBY (The Premium UI)
   // =========================================
   if (viewState === "lobby") {
     return (
