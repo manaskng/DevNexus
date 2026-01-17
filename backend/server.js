@@ -7,6 +7,9 @@ import { v2 as cloudinary } from "cloudinary";
 import multer from "multer";
 import fs from "fs"; 
 import os from "os"; 
+import { createServer } from "http"; 
+import { Server } from "socket.io";
+import { setupSocket } from "./socket/socketHandler.js";
 
 import { connect } from "./config/db.js";
 import authRoutes from "./routes/auth.js";
@@ -16,6 +19,8 @@ import userProfileRoutes from "./routes/userProfileRoutes.js";
 import codeSnippetRoutes from "./routes/codeSnippetRoutes.js";
 import profileLinkRoutes from "./routes/profileLinkRoutes.js";
 import searchRoutes from "./routes/searchRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
+import compilerRoutes from "./routes/compilerRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,20 +28,33 @@ const __dirname = path.dirname(__filename);
 dotenv.config();
 
 const app = express();
+//  Wrap Express with HTTP Server
+const httpServer = createServer(app);
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-app.use(cors({
+//  Configure CORS 
+const corsOptions = {
   origin: [
     "http://localhost:5173",               
     "https://my-nano-notesf.vercel.app" ,
     "https://devnexus-app.vercel.app",
   ],
   credentials: true
-}));
+};
 
-// UPDATED: Reads split variables from .env
+app.use(cors(corsOptions));
+
+//  Initialize Socket.IO
+const io = new Server(httpServer, {
+  cors: corsOptions
+});
+
+//  Connect Socket Logic
+setupSocket(io);
+
+// Cloudinary Config
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -46,11 +64,12 @@ cloudinary.config({
 
 const upload = multer({ 
   dest: os.tmpdir(), 
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+  limits: { fileSize: 5 * 1024 * 1024 } 
 });
 
 connect();
 
+// Routes
 app.use("/api/users", authRoutes);
 app.use("/api/notes", notesRoutes);
 app.use("/api/tasks", taskRoutes); 
@@ -58,15 +77,15 @@ app.use("/api/snippets", codeSnippetRoutes);
 app.use("/api/profiles", profileLinkRoutes);
 app.use("/api/user-profile", userProfileRoutes); 
 app.use("/api/search", searchRoutes);
+app.use("/api/ai", aiRoutes);
+app.use("/api/compiler", compilerRoutes);
 
+//cloudinary upload endpoint
 app.post("/api/upload", upload.single("file"), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: "No file provided" });
-    }
+    if (!req.file) return res.status(400).json({ message: "No file provided" });
 
     console.log("File received:", req.file.path);
-
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: "devdocs",
       resource_type: "image"
@@ -77,7 +96,6 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
     });
 
     res.json({ url: result.secure_url });
-
   } catch (error) {
     console.error("Cloudinary Upload Error:", error);
     res.status(500).json({ message: "Image upload failed", error: error.message });
@@ -88,6 +106,7 @@ app.get("/ping", (req, res) => {
   res.status(200).send("Server Ok");
 });
 
-app.listen(PORT, () => {
-  console.log(`Server connected at port: ${PORT}`);
+
+httpServer.listen(PORT, () => {
+  console.log(`Server + Socket running at port: ${PORT}`);
 });

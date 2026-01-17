@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
     "@radix-ui/react-tabs": "^1.1.13",
     "@sendgrid/mail": "^8.1.6",
     "@tiptap/extension-image": "^3.15.3",
@@ -28,9 +29,12 @@
     "react-dom": "^19.1.0",
     "react-hot-toast": "^2.6.0",
     "react-icons": "^5.5.0",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^7.6.3",
     "react-syntax-highlighter": "^16.1.0",
-    "tailwind-merge": "^3.4.0"
+    "socket.io-client": "^4.8.3",
+    "tailwind-merge": "^3.4.0",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",

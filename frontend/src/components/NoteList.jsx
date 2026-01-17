@@ -27,7 +27,6 @@ function NoteList() {
       const sorted = data.sort((a, b) => (b.isPinned - a.isPinned) || new Date(b.updatedAt) - new Date(a.updatedAt));
       setNotes(sorted);
       
-      // On Desktop (md+), auto-select first note if available
       if (window.innerWidth >= 768 && !selectedNote && sorted.length > 0) {
         setSelectedNote(sorted[0]);
       }
@@ -43,7 +42,7 @@ function NoteList() {
   // --- HANDLERS ---
   const handleNoteSelect = (note) => {
     setSelectedNote(note);
-    setMobileView("detail"); // Switch to detail view on mobile
+    setMobileView("detail");
   };
 
   const handleBackToList = () => {
@@ -93,23 +92,24 @@ function NoteList() {
   const DocListItem = ({ note }) => (
     <div 
       onClick={() => handleNoteSelect(note)}
+      // UPDATED HOVER COLORS for better contrast against new gray background
       className={`
         group flex items-center justify-between p-3 mb-2 rounded-lg cursor-pointer transition-all border
         ${selectedNote?._id === note._id 
-          ? 'bg-indigo-50 border-indigo-200 dark:bg-indigo-900/20 dark:border-indigo-500/30 shadow-sm' 
-          : 'bg-transparent border-transparent hover:bg-slate-50 dark:hover:bg-white/5'
+          ? 'bg-white border-indigo-200 shadow-sm dark:bg-indigo-900/20 dark:border-indigo-500/30' 
+          : 'bg-transparent border-transparent hover:bg-white/60 dark:hover:bg-white/5'
         }
       `}
     >
       <div className="flex items-center gap-3 overflow-hidden">
-        <div className={`p-2 rounded-md shrink-0 ${note.isPinned ? 'text-indigo-600 bg-indigo-100 dark:text-indigo-400 dark:bg-indigo-500/20' : 'text-slate-400 bg-slate-100 dark:bg-slate-800'}`}>
+        <div className={`p-2 rounded-md shrink-0 ${note.isPinned ? 'text-indigo-600 bg-indigo-50 dark:text-indigo-400 dark:bg-indigo-500/20' : 'text-slate-500 bg-slate-200/50 dark:bg-slate-800'}`}>
            <FiFileText size={16} />
         </div>
         <div className="min-w-0">
            <h4 className={`text-sm font-medium truncate ${selectedNote?._id === note._id ? 'text-indigo-700 dark:text-indigo-300' : 'text-slate-700 dark:text-slate-200'}`}>
              {note.title}
            </h4>
-           <span className="text-[10px] text-slate-400 block mt-0.5">
+           <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">
              {new Date(note.updatedAt).toLocaleDateString()}
            </span>
         </div>
@@ -119,17 +119,16 @@ function NoteList() {
   );
 
   return (
+    // Main container background matches the Right Panel for seamless edges
     <div className="flex h-full w-full overflow-hidden bg-white dark:bg-[#0b1121]">
       
-      {/* ---------------- LEFT PANEL (LIST) ---------------- 
-         Logic:
-         - Mobile: Visible ONLY if view is 'list'
-         - Desktop (md+): ALWAYS Visible (flex)
-      */}
+      {/* ---------------- LEFT PANEL (LIST) ---------------- */}
       <div className={`
-          flex-col bg-slate-50/50 dark:bg-[#0b1121] border-r border-slate-200 dark:border-white/5
+          flex-col border-r border-slate-200 dark:border-white/5
           w-full md:w-80 h-full shrink-0
-          ${mobileView === 'list' ? 'flex' : 'hidden md:flex'} 
+          ${mobileView === 'list' ? 'flex' : 'hidden md:flex'}
+          /* COLOR CHANGE HERE: Darker gray in light mode, slightly lighter in dark mode */
+          bg-slate-100 dark:bg-[#151b2e]
       `}>
         
         {/* Header */}
@@ -137,7 +136,7 @@ function NoteList() {
            <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2 uppercase tracking-wider">
                 Explorer
-                <span className="text-[10px] font-normal text-slate-400 bg-slate-200 dark:bg-white/10 px-1.5 py-0.5 rounded-full">
+                <span className="text-[10px] font-normal text-slate-500 bg-slate-200 dark:bg-white/10 px-1.5 py-0.5 rounded-full">
                   {notes.length}
                 </span>
               </h2>
@@ -150,35 +149,35 @@ function NoteList() {
            </div>
            
            <div className="relative">
-             <FiSearch className="absolute left-3 top-2.5 text-slate-400 text-xs" />
+             <FiSearch className="absolute left-3 top-2.5 text-slate-500 dark:text-slate-400 text-xs" />
+             {/* Input background contrast tweaked */}
              <input 
                value={search}
                onChange={(e) => setSearch(e.target.value)}
                placeholder="Search..."
-               className="w-full bg-white dark:bg-[#151b2e] border border-slate-200 dark:border-white/10 rounded-lg pl-8 pr-3 py-2 text-xs focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all"
+               className="w-full bg-white dark:bg-[#0b1121] border border-slate-200 dark:border-white/10 rounded-lg pl-8 pr-3 py-2 text-xs focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all shadow-sm"
              />
            </div>
         </div>
 
-        {/* Scrollable List */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-3 min-h-0 bg-white dark:bg-[#0b1121]">
+        {/* Scrollable List Container */}
+        {/* Background matches parent Left Panel */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-3 min-h-0 bg-slate-100 dark:bg-[#151b2e]">
           {loading ? (
              <div className="flex justify-center py-10"><FiLoader className="animate-spin text-slate-400"/></div>
           ) : filteredNotes.length === 0 ? (
-             <div className="text-center py-10 text-xs text-slate-400">No docs found</div>
+             <div className="text-center py-10 text-xs text-slate-500 dark:text-slate-400">No docs found</div>
           ) : (
              filteredNotes.map(note => <DocListItem key={note._id} note={note} />)
           )}
         </div>
       </div>
 
-      {/* ---------------- RIGHT PANEL (CONTENT) ---------------- 
-         Logic:
-         - Mobile: Visible ONLY if view is 'detail'
-         - Desktop (md+): ALWAYS Visible (flex)
-      */}
+      {/* ---------------- RIGHT PANEL (CONTENT) ---------------- */}
+      {/* Keeps the cleanest, brightest background for readability */}
       <div className={`
-         flex-1 flex-col h-full overflow-hidden bg-white dark:bg-[#0b1121]
+         flex-1 flex-col h-full overflow-hidden 
+         bg-white dark:bg-[#0b1121]
          ${mobileView === 'detail' ? 'flex' : 'hidden md:flex'}
       `}>
         {selectedNote ? (
@@ -186,7 +185,6 @@ function NoteList() {
             {/* Toolbar */}
             <div className="h-16 shrink-0 border-b border-slate-200 dark:border-white/5 flex items-center justify-between px-4 md:px-8 bg-white dark:bg-[#0b1121]">
                <div className="flex items-center gap-3 overflow-hidden">
-                  {/* Back Button (Mobile Only) */}
                   <button 
                     onClick={handleBackToList}
                     className="md:hidden p-2 -ml-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full"
@@ -198,17 +196,17 @@ function NoteList() {
                       <h1 className="text-lg font-bold text-slate-900 dark:text-white truncate max-w-[200px] md:max-w-md flex items-center gap-2">
                         {selectedNote.title}
                       </h1>
-                      <p className="text-xs text-slate-400 hidden md:flex items-center gap-2 mt-0.5">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 hidden md:flex items-center gap-2 mt-0.5">
                         Last edited {new Date(selectedNote.updatedAt).toLocaleDateString()}
                       </p>
                   </div>
                </div>
                
                <div className="flex items-center gap-1 shrink-0">
-                  <button onClick={(e) => handlePin(e, selectedNote)} className={`p-2 rounded-md ${selectedNote.isPinned ? 'text-indigo-600 bg-indigo-50 dark:bg-indigo-500/20' : 'text-slate-400'}`}>
+                  <button onClick={(e) => handlePin(e, selectedNote)} className={`p-2 rounded-md ${selectedNote.isPinned ? 'text-indigo-600 bg-indigo-50 dark:bg-indigo-500/20' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5'}`}>
                     {selectedNote.isPinned ? <BsPinFill size={16}/> : <BsPinAngle size={16}/>}
                   </button>
-                  <button onClick={handleDelete} className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md">
+                  <button onClick={handleDelete} className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors">
                     <FiTrash2 size={16}/>
                   </button>
                   <div className="h-5 w-px bg-slate-200 dark:bg-white/10 mx-1 md:mx-3"></div>
@@ -232,7 +230,7 @@ function NoteList() {
             </div>
           </>
         ) : (
-          /* Empty State (Desktop Only) */
+          /* Empty State */
           <div className="flex-1 flex flex-col items-center justify-center text-slate-400 bg-white dark:bg-[#0b1121]">
              <div className="w-16 h-16 bg-slate-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4">
                 <FiFileText size={32} className="opacity-50"/>

@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { FiFileText, FiCode, FiUser, FiGrid, FiLayers } from "react-icons/fi";
+import { FiFileText, FiCode, FiUser, FiGrid, FiLayers, FiCpu } from "react-icons/fi";
 import NoteList from "./NoteList";
 import SnippetLibrary from "./SnippetLibrary"; 
 import ProfileManager from "./ProfileManager"; 
 import TaskBoard from "./TaskBoard"; 
+import DevSpace from "./DevSpace"; 
+
 const NavItem = ({ id, icon: Icon, label, activeTab, setActiveTab }) => {
   const isActive = activeTab === id;
   return (
@@ -16,7 +18,6 @@ const NavItem = ({ id, icon: Icon, label, activeTab, setActiveTab }) => {
           : "text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-blue-600 dark:hover:text-blue-400"
         }
       `}
-      title={label}
     >
       <div className="min-w-[24px] flex justify-center">
         <Icon size={20} className={isActive ? "animate-pulse-slow" : ""} />
@@ -26,7 +27,7 @@ const NavItem = ({ id, icon: Icon, label, activeTab, setActiveTab }) => {
         {label}
       </span>
 
-      <div className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 lg:hidden pointer-events-none transition-opacity z-50 whitespace-nowrap">
+      <div className="absolute left-16 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 lg:hidden pointer-events-none transition-opacity z-50 whitespace-nowrap shadow-md">
         {label}
       </div>
     </button>
@@ -48,13 +49,10 @@ function Dashboard() {
 
         <div className="flex-1 py-6 px-3 space-y-2 overflow-y-auto custom-scrollbar">
           <NavItem id="notes" icon={FiFileText} label="DevDocs" activeTab={activeTab} setActiveTab={setActiveTab} />
+          <NavItem id="devspace" icon={FiCpu} label="DevSpace (Live)" activeTab={activeTab} setActiveTab={setActiveTab} />
           <NavItem id="snippets" icon={FiCode} label="Code Library" activeTab={activeTab} setActiveTab={setActiveTab} />
-          
-          {/* 2. UNCOMMENTED THIS */}
           <NavItem id="tasks" icon={FiLayers} label="Task Board" activeTab={activeTab} setActiveTab={setActiveTab} />
-          
           <div className="my-4 border-t border-slate-100 dark:border-white/5 mx-2"></div>
-          
           <NavItem id="profiles" icon={FiUser} label="Profile Manager" activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
 
@@ -63,13 +61,25 @@ function Dashboard() {
         </div>
       </aside>
       
-      {/* MAIN CONTENT */}
-      <main className="flex-1 h-full overflow-y-auto relative custom-scrollbar">
-        <div className="p-4 lg:p-8 max-w-[1600px] mx-auto w-full min-h-full pb-24 md:pb-8">
+      {/* 🔴 MAIN CONTENT FIX 🔴 
+         Logic: If DevSpace is active, we LOCK the main scroll (overflow-hidden) and force h-full.
+         This lets DevSpace manage its own internal scrolling/layout.
+      */}
+      <main className={`
+        flex-1 h-full relative 
+        ${activeTab === 'devspace' ? 'overflow-hidden' : 'overflow-y-auto custom-scrollbar'}
+      `}>
+        <div className={`
+          mx-auto w-full transition-all duration-300
+          ${activeTab === 'devspace' 
+            ? 'h-full max-w-full p-0' // DevSpace Mode: Full height, no padding
+            : 'min-h-full max-w-[1600px] p-4 lg:p-8 pb-24 md:pb-8' // Standard Mode: Padding & scrolling
+          }
+        `}>
            {activeTab === "notes" && <NoteList />}
+           {activeTab === "devspace" && <DevSpace />}
            {activeTab === "snippets" && <SnippetLibrary />}
            {activeTab === "profiles" && <ProfileManager />}
-           {/* 3. UNCOMMENTED THIS */}
            {activeTab === "tasks" && <TaskBoard />} 
         </div>
       </main>
@@ -80,17 +90,18 @@ function Dashboard() {
             <FiFileText size={20}/>
             <span className="text-[10px] font-medium">Notes</span>
          </button>
+         <button onClick={() => setActiveTab("devspace")} className={`p-2 rounded-xl flex flex-col items-center gap-1 ${activeTab === 'devspace' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-gray-500'}`}>
+            <FiCpu size={20}/>
+            <span className="text-[10px] font-medium">Space</span>
+         </button>
          <button onClick={() => setActiveTab("snippets")} className={`p-2 rounded-xl flex flex-col items-center gap-1 ${activeTab === 'snippets' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-gray-500'}`}>
             <FiCode size={20}/>
             <span className="text-[10px] font-medium">Code</span>
          </button>
-         
-         {/* 4. ADDED TASK BUTTON FOR MOBILE */}
          <button onClick={() => setActiveTab("tasks")} className={`p-2 rounded-xl flex flex-col items-center gap-1 ${activeTab === 'tasks' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-gray-500'}`}>
             <FiLayers size={20}/>
             <span className="text-[10px] font-medium">Tasks</span>
          </button>
-
          <button onClick={() => setActiveTab("profiles")} className={`p-2 rounded-xl flex flex-col items-center gap-1 ${activeTab === 'profiles' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-gray-500'}`}>
             <FiUser size={20}/>
             <span className="text-[10px] font-medium">Profile</span>
