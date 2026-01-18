@@ -1,4 +1,4 @@
-![slide-0 7](https://github.com/user-attachments/assets/31550b7e-95c7-4dfd-9a75-f4cba6111140)# DevNexus
+# DevNexus
 **The Ultimate Collaborative Workspace for Developers.**
 ---
 DevNexus unifies the fragmented workflow of modern software engineers. It combines real-time collaborative coding, AI-powered assistance, Kanban-style task tracking, and documentation management into a single, cohesive ecosystem.
