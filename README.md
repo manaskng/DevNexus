@@ -1,11 +1,10 @@
-# DevNexus- 
-**The Ultimate Productivity Workspace for Developers.**
+# DevNexus
+**The Ultimate Collaborative Workspace for Developers.**
 ---
-DevNexus unifies the fragmented workflow of modern software engineers. It combines code snippet management, Kanban-style task tracking, rich-text note-taking, and dynamic developer portfolios into a single, cohesive ecosystem.
+DevNexus unifies the fragmented workflow of modern software engineers. It combines real-time collaborative coding, AI-powered assistance, Kanban-style task tracking, and documentation management into a single, cohesive ecosystem.
 ---
 ![screen-capture (13)](https://github.com/user-attachments/assets/422ad9b0-42e6-4816-8ff3-c67ba8f933f4)
 ---
-
 
 ## 🚀 Live Demo & Walkthrough
 ### 🌐 Deployment
@@ -15,27 +14,46 @@ DevNexus unifies the fragmented workflow of modern software engineers. It combin
 | **Backend API** | [devnexus-api.onrender.com](https://devnexus-api.onrender.com) | ![Render](https://img.shields.io/badge/Render-Active-46E3B7?logo=render&logoColor=white) |
 
 ---
-### Youtube  Video workflow Live:
+### Youtube Video workflow Live:
 > **[▶️ Click here to watch the full video on YouTube](https://youtu.be/EKsHeZQpwYA)**
 ![DevNexus_gif](https://github.com/user-attachments/assets/cf0da425-dae3-449b-b988-143cb4cbaf6a)
 
 
 ## 🛠 Tech Stack
 
-| Frontend          | Backend           | Database        | Authentication | Deployment & DevOps      |
+| Frontend          | Backend           | Database        | Real-Time & AI | Deployment & DevOps      |
 | ----------------- | ----------------- | --------------- | -------------- | ------------------------ |
-| ![React](https://img.shields.io/badge/-React-61DAFB?logo=react&logoColor=black) | ![Node.js](https://img.shields.io/badge/-Node.js-339933?logo=node.js&logoColor=white) | ![MongoDB](https://img.shields.io/badge/-MongoDB-47A248?logo=mongodb&logoColor=white) | ![JWT](https://img.shields.io/badge/-JWT-000000?logo=jsonwebtokens&logoColor=white) | ![Vercel](https://img.shields.io/badge/-Vercel-black?logo=vercel&logoColor=white) |
-| ![Tailwind](https://img.shields.io/badge/-Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white) | ![Express.js](https://img.shields.io/badge/-Express.js-000000?logo=express&logoColor=white) |                 | ![Nodemailer](https://img.shields.io/badge/-Nodemailer-44a6d1) | ![Render](https://img.shields.io/badge/-Render-46E3B7?logo=render&logoColor=white) |
-| ![Framer](https://img.shields.io/badge/-Framer_Motion-0055FF?logo=framer&logoColor=white) |                   |                 | ![Bcrypt](https://img.shields.io/badge/-Bcrypt-blue)  | ![Docker](https://img.shields.io/badge/-Docker-2496ED?logo=docker&logoColor=white) |
+| ![React](https://img.shields.io/badge/-React-61DAFB?logo=react&logoColor=black) | ![Node.js](https://img.shields.io/badge/-Node.js-339933?logo=node.js&logoColor=white) | ![MongoDB](https://img.shields.io/badge/-MongoDB-47A248?logo=mongodb&logoColor=white) | ![Socket.io](https://img.shields.io/badge/-Socket.io-010101?logo=socket.io&logoColor=white) | ![Vercel](https://img.shields.io/badge/-Vercel-black?logo=vercel&logoColor=white) |
+| ![Tailwind](https://img.shields.io/badge/-Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white) | ![Express.js](https://img.shields.io/badge/-Express.js-000000?logo=express&logoColor=white) |                 | ![Gemini](https://img.shields.io/badge/-Google%20Gemini-8E75B2?logo=google&logoColor=white) | ![Render](https://img.shields.io/badge/-Render-46E3B7?logo=render&logoColor=white) |
+| ![Framer](https://img.shields.io/badge/-Framer_Motion-0055FF?logo=framer&logoColor=white) |                   |                 | ![JWT](https://img.shields.io/badge/-JWT-000000?logo=jsonwebtokens&logoColor=white)  | ![Docker](https://img.shields.io/badge/-Docker-2496ED?logo=docker&logoColor=white) |
 
 ---
 
 ## 💎 Key Features
 
-### 1.  Secure Authentication & Recovery
+### 1. Real-Time DevSpace (Collaboration & AI)
+* **Live Coding Rooms:** Create instant rooms where multiple users can join via Room ID.
+* **Socket.io Synchronization:** See active users, typing indicators, and code changes in real-time.
+* **Integrated Compiler:** Execute code in 7+ languages (C++, Java, Python, JS, etc.) directly within the browser.
+* **Neural AI Engine:** Powered by **Google Gemini**, offering instant "Explain Code" and "Refactor" capabilities.
+
+### 2. DevDocs Manager
+<img alt="DevDocs Editor Light Mode" src="https://github.com/user-attachments/assets/69363887-24ff-452a-9649-25322d08ace3" width="650" />
+
+* **Documentation Hub:** A dedicated space for project research and notes (rebranded from standard Notes).
+* **Advanced Editor:** Built on **TipTap**, supporting bold, italics, code blocks, lists, and links.
+* **Pin & Organize:** Keep critical documentation at the top of your workspace.
+
+<p align="left">
+<img alt="DevDocs Editor Dark Mode" src="https://github.com/user-attachments/assets/871ebb95-0a1a-4aeb-997b-8c1199233fdf" width="450" />
+&nbsp;
+<img alt="Editor Code Block Example" src="https://github.com/user-attachments/assets/80124a12-c21d-4877-83ce-72e441f3d382" width="250" />
+</p>
+
+### 3. Secure Authentication & Recovery
 * **JWT Authentication:** Stateless session management with secure HTTP headers.
 * **Reliable Recovery:** Production-grade password reset flow using **Brevo (SMTP)** for high deliverability.
-* **Encryption:** Sensitive data hashed using `bcryptjs` before storage.
+* **Encryption:** Sensitive data hashed using `bcryptjs`.
 
 <br/>
 <img width="1912" height="826" alt="Screenshot 2025-12-17 204753" src="https://github.com/user-attachments/assets/4e764f6f-5272-4c48-b278-fdd65ab72e7b" />
@@ -44,61 +62,49 @@ DevNexus unifies the fragmented workflow of modern software engineers. It combin
   &nbsp; &nbsp; <img alt="Forgot Password Form" src="https://github.com/user-attachments/assets/fd300ea4-def1-4f46-8606-ba7501302ecd" width="300" />
 </p>
 
-### 2.  Code Vault (Snippet Library)
+### 4. Code Vault (Snippet Library)
 <img alt="Snippet Library Light Mode" src="https://github.com/user-attachments/assets/60d00622-619b-46cb-aed9-957f162d506e" width="650" />
 
-* **Syntax Highlighting:** Store reusable algorithms with automatic language detection and using *react-syntax-highligher*.
+* **Syntax Highlighting:** Store reusable algorithms with automatic language detection using *react-syntax-highlighter*.
+* **Direct Save:** Push working code from the DevSpace compiler directly to your Vault.
 * **Smart Search:** Instantly filter snippets by tags (e.g., `#dp`, `#recursion`) or title.
 
 <img alt="Snippet Library Dark Mode with Search" src="https://github.com/user-attachments/assets/20c45553-dd6d-48fb-8b6d-c60e473aa628" width="650" />
-* **Resizable button** : to improve developer Experience
+* **Resizable button**: to improve developer Experience
   <img width="1585" height="806" alt="image" src="https://github.com/user-attachments/assets/fbe46943-708d-41a4-a914-3532abb4d511" />
 
-
-### 3.  Rich Text Notes
-<img alt="Notes Editor Light Mode" src="https://github.com/user-attachments/assets/69363887-24ff-452a-9649-25322d08ace3" width="650" />
-
-* **Advanced Editor:** Built on **TipTap**, supporting bold, italics, code blocks, lists, and links.
-* **Dark Mode Native:** The editor uses `@tailwindcss/typography` to seamlessly adapt text styles between light and dark themes.
-
-<p align="left">
-<img alt="Notes Editor Dark Mode" src="https://github.com/user-attachments/assets/871ebb95-0a1a-4aeb-997b-8c1199233fdf" width="450" />
-&nbsp;
-<img alt="Editor Code Block Example" src="https://github.com/user-attachments/assets/80124a12-c21d-4877-83ce-72e441f3d382" width="250" />
-</p>
-
-
-### 4.  Task Command (Kanban)
+### 5. Task Command (Kanban)
 * **Kanban Board:** A drag-and-drop interface for managing engineering tasks.
-* **Visual States:** distinct visual indicators for *Todo*, *In-Progress*, and *Completed* items.
+* **Visual States:** Distinct visual indicators for *Todo*, *In-Progress*, and *Completed* items.
 
 <img alt="Kanban Board Dark Mode" src="https://github.com/user-attachments/assets/276a427b-df64-47f2-ae41-f9056fb5fb15" width="650" />
  
-### 5.  Dynamic Career Profile
+### 6. Dynamic Career Profile
 * **Live Stats Aggregation:** Automatically pulls and visualizes data from **GitHub** and **LeetCode** APIs.
-* **Smart Portfolio:** Generates a public, shareable link (e.g., `/u/username`) that serves as a live resume for recruiters.
-* **Auto-Asset Generation:** Uses OpenGraph to generate project cover images automatically from GitHub repository links.
+* **Smart Portfolio:** Generates a public, shareable link (e.g., `/u/username`) that serves as a live resume.
+* **Auto-Asset Generation:** Uses OpenGraph to generate project cover images automatically.
 
 <img alt="Profile Header View" src="https://github.com/user-attachments/assets/b1795180-5bf9-4182-89b7-9a7d4a6c1ac9" width="600" />
 <img alt="Profile Skills and Projects" src="https://github.com/user-attachments/assets/954d0734-d2e7-4fe8-905f-a3167461c501" width="600" />
 <img alt="Profile Achievements View" src="https://github.com/user-attachments/assets/8d8778da-0d37-4657-b845-5dd1099dda3c" width="600" />
+
 ---
 
-##  APIs, Libraries & Integrations
+## 🔌 APIs, Libraries & Integrations
 
-DevNexus leverages a suite of powerful APIs and specialized libraries to deliver a seamless user experience:
+DevNexus leverages a suite of powerful APIs to deliver a seamless experience:
+
+### **Core Intelligence & Real-Time**
+* **[Socket.io](https://socket.io):** Enables bidirectional, real-time communication for the coding environment (DevSpace).
+* **[Google Gemini API](https://ai.google.dev):** Powers the Neural Engine for explaining code logic and refactoring suggestions.
+* **[JDoodle / Compiler API](https://www.jdoodle.com/compiler-api/):** Provides the backend infrastructure for compiling and executing code in multiple languages securely.
 
 ### **External Data & Services**
-* **[SkillIcons.dev](https://skillicons.dev):** Dynamically renders high-quality SVG icons for the "Tech Stack" section by normalizing user input (e.g., mapping "C++" to `cpp`).
-* **[GitHub Open Graph API](https://opengraph.githubassets.com):** Automatically fetches social preview images from GitHub repositories to populate project cover images without user upload.
-* **[GitHub Profile Summary Cards](https://github-profile-summary-cards.vercel.app):** Visualizes real-time GitHub activity, stars, and commits via a dark-mode optimized dashboard card.
-* **[LeetCard API](https://leetcard.jacoblin.cool):** Fetches live LeetCode problem-solving statistics and global ranking for the career profile.
-* **[Brevo (Sendinblue)](https://www.brevo.com):** Powers the secure, production-grade "Forgot Password" email delivery system via SMTP.
-
-### **Core UI & Functionality**
-* **[TipTap (ProseMirror)](https://tiptap.dev):** The engine behind the headless Rich Text Editor, providing a Notion-like writing experience with extensive formatting support.
-* **[React Syntax Highlighter](https://github.com/react-syntax-highlighter):** Enables PrismJS-based syntax highlighting for the Code Snippet Library, supporting multiple languages.
-* **[Framer Motion](https://www.framer.com/motion/):** Powers the complex animations, including the 3D project card lift effects, empty state transitions, and modal interactions.
+* **[SkillIcons.dev](https://skillicons.dev):** Dynamically renders high-quality SVG icons for the "Tech Stack" section.
+* **[GitHub Open Graph API](https://opengraph.githubassets.com):** Automatically fetches social preview images.
+* **[GitHub Profile Summary Cards](https://github-profile-summary-cards.vercel.app):** Visualizes real-time GitHub stats.
+* **[LeetCard API](https://leetcard.jacoblin.cool):** Fetches live LeetCode statistics.
+* **[Brevo (Sendinblue)](https://www.brevo.com):** Powers the secure SMTP email delivery system.
 
 ---
 ##  Local Setup and Installation
