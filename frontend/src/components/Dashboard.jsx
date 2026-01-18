@@ -61,10 +61,7 @@ function Dashboard() {
         </div>
       </aside>
       
-      {/* 🔴 MAIN CONTENT FIX 🔴 
-         Logic: If DevSpace is active, we LOCK the main scroll (overflow-hidden) and force h-full.
-         This lets DevSpace manage its own internal scrolling/layout.
-      */}
+     
       <main className={`
         flex-1 h-full relative 
         ${activeTab === 'devspace' ? 'overflow-hidden' : 'overflow-y-auto custom-scrollbar'}
