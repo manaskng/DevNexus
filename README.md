@@ -33,15 +33,22 @@ DevNexus unifies the fragmented workflow of modern software engineers. It combin
 
 ### 1. Real-Time DevSpace (Collaboration & AI)
 * **Live Coding Rooms:** Create instant rooms where multiple users can join via Room ID.
-* **Socket.io Synchronization:** See active users, typing indicators, and code changes in real-time.
+  <img width="1894" height="899" alt="Screenshot 2026-01-17 214343" src="https://github.com/user-attachments/assets/b4e20100-ca54-46b8-b8df-923a68d6bce7" />
+* **Socket.io Synchronization:** See active users, typing indicators, and code changes in real-time in Acitvity log in Responsive UI
+  For Data efficiency we used MongoDB TTL indexes for only 24 hours for Activity log 
+  <img width="720" height="1600" alt="image" src="https://github.com/user-attachments/assets/921d3d4c-4e62-4a2b-bf23-edc5f0b392a2" />
+  <img width="811" height="1600" alt="image" src="https://github.com/user-attachments/assets/39afa9e8-4063-44a4-b614-0227b0afb5df" />
+  <img width="805" height="1600" alt="image" src="https://github.com/user-attachments/assets/2c28fd5a-d8b4-4600-98fa-157312223fcc" />
+
 * **Integrated Compiler:** Execute code in 7+ languages (C++, Java, Python, JS, etc.) directly within the browser.
 * **Neural AI Engine:** Powered by **Google Gemini**, offering instant "Explain Code" and "Refactor" capabilities.
 
 ### 2. DevDocs Manager
-<img alt="DevDocs Editor Light Mode" src="https://github.com/user-attachments/assets/69363887-24ff-452a-9649-25322d08ace3" width="650" />
-
-* **Documentation Hub:** A dedicated space for project research and notes (rebranded from standard Notes).
+<img width="1891" height="905" alt="Screenshot 2026-01-18 121559" src="https://github.com/user-attachments/assets/109ba437-f477-4cd7-bb48-04ef6cf1e7b8" />
+* **Documentation Hub:** A dedicated space for project research and Documentation.
 * **Advanced Editor:** Built on **TipTap**, supporting bold, italics, code blocks, lists, and links.
+  <img width="1891" height="905" alt="image" src="https://github.com/user-attachments/assets/dc32d9ef-28db-4196-814d-3cc6dbf8e9b5" />
+
 * **Pin & Organize:** Keep critical documentation at the top of your workspace.
 
 <p align="left">
