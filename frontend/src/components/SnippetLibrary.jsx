@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useLocation } from "react-router-dom"; // 
 import { FiPlus, FiCode, FiSearch, FiZap, FiTag, FiCpu, FiCopy, FiArrowRight } from "react-icons/fi";
 import { motion } from "framer-motion";
 import SnippetCard from "./SnippetCard";
@@ -86,14 +87,14 @@ const SnippetModal = ({ isOpen, onClose, onSave, snippetToEdit }) => {
           </div>
 
           <div>
-             <label className="block text-xs font-bold text-slate-400 dark:text-gray-500 uppercase mb-1">Code</label>
-             <textarea 
-               className="w-full p-3 border border-slate-200 dark:border-gray-700 rounded-lg font-mono text-sm h-64 focus:ring-2 focus:ring-blue-500 outline-none resize-none bg-slate-900 dark:bg-[#020617] text-white" 
-               placeholder="Paste your code here..." 
-               value={formData.code} 
-               onChange={e => setFormData({ ...formData, code: e.target.value })} 
-               required 
-             />
+              <label className="block text-xs font-bold text-slate-400 dark:text-gray-500 uppercase mb-1">Code</label>
+              <textarea 
+                className="w-full p-3 border border-slate-200 dark:border-gray-700 rounded-lg font-mono text-sm h-64 focus:ring-2 focus:ring-blue-500 outline-none resize-none bg-slate-900 dark:bg-[#020617] text-white" 
+                placeholder="Paste your code here..." 
+                value={formData.code} 
+                onChange={e => setFormData({ ...formData, code: e.target.value })} 
+                required 
+              />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -178,13 +179,13 @@ const EmptySnippetView = ({ onAdd }) => (
         />
         <div className="absolute -bottom-6 -right-6 bg-white dark:bg-[#1e293b] p-4 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 hidden sm:block">
            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 font-bold">
-                <FiCode />
-              </div>
-              <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold">Supported Languages</p>
-                <p className="text-sm font-bold text-slate-900 dark:text-white">C++, Python, JS & more</p>
-              </div>
+             <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 font-bold">
+               <FiCode />
+             </div>
+             <div>
+               <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold">Supported Languages</p>
+               <p className="text-sm font-bold text-slate-900 dark:text-white">C++, Python, JS & more</p>
+             </div>
            </div>
         </div>
       </div>
@@ -202,6 +203,8 @@ function SnippetLibrary() {
   // NEW: State for expanded cards
   const [expandedSnippetIds, setExpandedSnippetIds] = useState([]);
 
+  // 1. Get Location State
+  const location = useLocation();
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
@@ -210,10 +213,22 @@ function SnippetLibrary() {
       try { 
         const { data } = await axios.get(`${API_URL}/api/snippets`, { headers: { Authorization: `Bearer ${token}` } }); 
         setSnippets(data); 
+
+        // 2. CHECK IF REDIRECTED FROM SEARCH
+        if (location.state?.selectedId) {
+          const found = data.find(s => s._id === location.state.selectedId);
+          if (found) {
+            setEditingSnippet(found);
+            setIsModalOpen(true);
+            // Optional: Clear history so it doesn't reopen on refresh
+            window.history.replaceState({}, document.title);
+          }
+        }
+
       } catch (e) { console.error(e); }
     };
     fetchSnippets();
-  }, [API_URL]);
+  }, [API_URL, location.state]); // 3. Re-run if location changes
 
   const handleOpenAdd = () => {
     setEditingSnippet(null);
