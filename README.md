@@ -2,6 +2,7 @@
 **The Ultimate Collaborative Workspace for Developers.**
 ---
 DevNexus unifies the fragmented workflow of modern software engineers. It combines real-time collaborative coding, AI-powered assistance, Kanban-style task tracking, and documentation management into a single, cohesive ecosystem.
+MongoDB Atlas Search for efficient Searching acroos Entire WorkSpace for Using Indexing.
 ---
 ![screen-capture (13)](https://github.com/user-attachments/assets/422ad9b0-42e6-4816-8ff3-c67ba8f933f4)
 ---
@@ -60,14 +61,10 @@ DevNexus unifies the fragmented workflow of modern software engineers. It combin
   <img width="100%" alt="DevDocs Hub" src="https://github.com/user-attachments/assets/109ba437-f477-4cd7-bb48-04ef6cf1e7b8" />
 
 * **Advanced Editor:** Built on **TipTap**, supporting bold, italics, code blocks, lists, and links.
-  <img width="100%" alt="DevDocs Editor" src="https://github.com/user-attachments/assets/dc32d9ef-28db-4196-814d-3cc6dbf8e9b5" />
-
-<p align="left">
+  <img width="1264" height="819" alt="image" src="https://github.com/user-attachments/assets/4f7ba951-766f-493a-9061-4b9a05d8d640" />
   <img alt="DevDocs Editor Dark Mode" src="https://github.com/user-attachments/assets/871ebb95-0a1a-4aeb-997b-8c1199233fdf" width="450" />
   &nbsp;
-  <img alt="Editor Code Block Example" src="https://github.com/user-attachments/assets/80124a12-c21d-4877-83ce-72e441f3d382" width="250" />
-</p>
-
+  
 ### 3. Secure Authentication & Recovery
 * **JWT Authentication:** Stateless session management with secure HTTP headers.
 * **Reliable Recovery:** Production-grade password reset flow using **Brevo (SMTP)** for high deliverability.
