@@ -3,114 +3,52 @@ import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   FiEdit3, FiSave, FiPlus, FiTrash2, FiMapPin, FiMail, 
-  FiGithub, FiLinkedin, FiExternalLink, FiCpu, FiAward, FiCode, FiShare2, FiCheck, FiDownload, FiMessageSquare, FiX, FiArrowRight, FiCamera, FiImage, FiStar 
+  FiGithub, FiLinkedin, FiExternalLink, FiCpu, FiAward, 
+  FiCode, FiShare2, FiCheck, FiDownload, FiMessageSquare, 
+  FiX, FiArrowRight, FiCamera, FiImage, FiStar, FiUploadCloud, FiLoader 
 } from "react-icons/fi";
 
-// --- HELPER: Normalize Skills for Icons ---
+
 const getSkillIcon = (skillName) => {
   if (!skillName) return null;
-  
-  // Normalize: Lowercase, remove spaces, dots, and special chars (except + and # for C++/C#)
   const clean = skillName.toLowerCase().trim();
-
-  // Comprehensive Map for SkillIcons.dev slugs
+  // ... (Keep your existing huge map here) ...
   const map = {
-    // Languages
     'c++': 'cpp', 'cpp': 'cpp', 'cplusplus': 'cpp',
-    'c#': 'cs', 'csharp': 'cs',
-    'python': 'python', 'py': 'python',
-    'java': 'java',
-    'javascript': 'js', 'js': 'js',
-    'typescript': 'ts', 'ts': 'ts',
-    'html': 'html', 'html5': 'html',
-    'css': 'css', 'css3': 'css',
-    'go': 'go', 'golang': 'go',
-    'rust': 'rust',
-    'php': 'php',
-    'ruby': 'ruby',
-    'swift': 'swift',
-    'kotlin': 'kotlin',
-    'dart': 'dart',
-
-    // Frontend
-    'react': 'react', 'reactjs': 'react', 'react.js': 'react',
-    'next': 'nextjs', 'nextjs': 'nextjs',
-    'vue': 'vue', 'vuejs': 'vue',
-    'angular': 'angular',
-    'svelte': 'svelte',
-    'tailwind': 'tailwindcss', 'tailwindcss': 'tailwindcss', 'tailwind css': 'tailwindcss',
-    'bootstrap': 'bootstrap',
-    'sass': 'sass', 'scss': 'sass',
-    'redux': 'redux',
-    'jquery': 'jquery',
-    'vite': 'vite',
-    'webpack': 'webpack',
-    'babel': 'babel',
-
-    // Backend & Database
-    'node': 'nodejs', 'nodejs': 'nodejs', 'node.js': 'nodejs',
-    'express': 'express', 'expressjs': 'express',
-    'mongo': 'mongodb', 'mongodb': 'mongodb', 'mongoose': 'mongodb',
-    'postgres': 'postgresql', 'postgresql': 'postgresql', 'sql': 'mysql',
-    'mysql': 'mysql',
-    'redis': 'redis',
-    'firebase': 'firebase',
-    'appwrite': 'appwrite',
-    'supabase': 'supabase',
-    'graphql': 'graphql',
-    'prisma': 'prisma',
-    'nginx': 'nginx',
-
-    // Machine Learning & Data Science
+    'c#': 'cs', 'csharp': 'cs', 'python': 'python', 'py': 'python',
+    'java': 'java', 'javascript': 'js', 'js': 'js',
+    'typescript': 'ts', 'ts': 'ts', 'html': 'html', 'html5': 'html',
+    'css': 'css', 'css3': 'css', 'go': 'go', 'golang': 'go',
+    'rust': 'rust', 'php': 'php', 'ruby': 'ruby', 'swift': 'swift',
+    'kotlin': 'kotlin', 'dart': 'dart', 'react': 'react', 'reactjs': 'react',
+    'next': 'nextjs', 'nextjs': 'nextjs', 'vue': 'vue', 'vuejs': 'vue',
+    'angular': 'angular', 'svelte': 'svelte', 'tailwind': 'tailwindcss',
+    'tailwindcss': 'tailwindcss', 'bootstrap': 'bootstrap', 'sass': 'sass',
+    'redux': 'redux', 'jquery': 'jquery', 'vite': 'vite', 'webpack': 'webpack',
+    'babel': 'babel', 'node': 'nodejs', 'nodejs': 'nodejs', 'node.js': 'nodejs',
+    'express': 'express', 'expressjs': 'express', 'mongo': 'mongodb',
+    'mongodb': 'mongodb', 'mongoose': 'mongodb', 'postgres': 'postgresql',
+    'postgresql': 'postgresql', 'sql': 'mysql', 'mysql': 'mysql', 'redis': 'redis',
+    'firebase': 'firebase', 'appwrite': 'appwrite', 'supabase': 'supabase',
+    'graphql': 'graphql', 'prisma': 'prisma', 'nginx': 'nginx',
     'scikitlearn': 'sklearn', 'sklearn': 'sklearn', 'sci-kit learn': 'sklearn',
-    'tensorflow': 'tensorflow', 'tf': 'tensorflow',
-    'pytorch': 'pytorch',
-    'opencv': 'opencv',
-    'pandas': 'pandas',
-    'numpy': 'numpy',
-    'matplotlib': 'matplotlib',
-    'anaconda': 'anaconda',
-    'r': 'r',
-
-    // DevOps & Cloud
-    'docker': 'docker',
-    'kubernetes': 'kubernetes', 'k8s': 'kubernetes',
-    'aws': 'aws', 'amazon': 'aws',
-    'gcp': 'gcp', 'google cloud': 'gcp',
-    'azure': 'azure',
-    'vercel': 'vercel',
-    'netlify': 'netlify',
-    'heroku': 'heroku',
-    'git': 'git',
-    'github': 'github',
-    'gitlab': 'gitlab',
-    'linux': 'linux',
-    'ubuntu': 'ubuntu',
-    'bash': 'bash',
-    'jenkins': 'jenkins',
-    'grafana': 'grafana',
-    'postman': 'postman',
-    
-    // Tools
-    'vscode': 'vscode',
-    'figma': 'figma',
-    'blender': 'blender',
-    'unity': 'unity',
-    'unreal': 'unreal'
+    'tensorflow': 'tensorflow', 'tf': 'tensorflow', 'pytorch': 'pytorch',
+    'opencv': 'opencv', 'pandas': 'pandas', 'numpy': 'numpy',
+    'matplotlib': 'matplotlib', 'anaconda': 'anaconda', 'r': 'r',
+    'docker': 'docker', 'kubernetes': 'kubernetes', 'k8s': 'kubernetes',
+    'aws': 'aws', 'amazon': 'aws', 'gcp': 'gcp', 'google cloud': 'gcp',
+    'azure': 'azure', 'vercel': 'vercel', 'netlify': 'netlify', 'heroku': 'heroku',
+    'git': 'git', 'github': 'github', 'gitlab': 'gitlab', 'linux': 'linux',
+    'ubuntu': 'ubuntu', 'bash': 'bash', 'jenkins': 'jenkins', 'grafana': 'grafana',
+    'postman': 'postman', 'vscode': 'vscode', 'figma': 'figma',
+    'blender': 'blender', 'unity': 'unity', 'unreal': 'unreal'
   };
 
-  // 1. Try exact map match
   if (map[clean]) return `https://skillicons.dev/icons?i=${map[clean]}`;
-  
-  // 2. Try removing spaces/dots for direct slug match (e.g. "next.js" -> "nextjs")
   const directSlug = clean.replace(/[^a-z0-9]/g, '');
   if (map[directSlug]) return `https://skillicons.dev/icons?i=${map[directSlug]}`;
-
-  // 3. Fallback: Check if the cleaned word exists in the values of the map (reverse lookup)
   const allSlugs = Object.values(map);
   if (allSlugs.includes(clean)) return `https://skillicons.dev/icons?i=${clean}`;
-
-  // 4. Return null to trigger Text Badge fallback
   return null;
 };
 
@@ -280,7 +218,7 @@ const HighImpactProjectCard = ({ project, index }) => {
   );
 };
 
-// --- COMPONENT: Achievement Card (NEW & IMPROVED) ---
+// --- COMPONENT: Achievement Card ---
 const AchievementCard = ({ text, index }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
@@ -289,13 +227,11 @@ const AchievementCard = ({ text, index }) => (
     whileHover={{ scale: 1.02, translateY: -5 }}
     className="relative p-6 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#1e293b]/50 backdrop-blur-sm shadow-sm hover:shadow-xl hover:border-yellow-500/50 transition-all group overflow-hidden"
   >
-    {/* Subtle Watermark Icon */}
     <div className="absolute -top-2 -right-4 p-4 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rotate-12">
       <FiAward size={100} className="text-slate-900 dark:text-white" />
     </div>
     
     <div className="flex items-start gap-4 relative z-10">
-      {/* Golden Badge Icon */}
       <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-white shadow-lg shrink-0">
          <FiStar size={24} className="fill-white/20" />
       </div>
@@ -321,8 +257,11 @@ function ProfileManager() {
   const [activeSection, setActiveSection] = useState("about");
   const [toastMessage, setToastMessage] = useState(null);
   
+  // Track Upload States
+  const [uploadingProjIndex, setUploadingProjIndex] = useState(null);
+  const [uploadingProfilePic, setUploadingProfilePic] = useState(false);
+  
   const API_URL = import.meta.env.VITE_API_URL;
-  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -352,6 +291,75 @@ function ProfileManager() {
   const handleCancel = () => {
     setFormData(profile); 
     setIsEditing(false);
+  };
+
+  // --- 1. HANDLE PROFILE PICTURE UPLOAD ---
+  const handleProfilePicUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast("File is too large. Max limit is 5MB.");
+      return;
+    }
+
+    setUploadingProfilePic(true);
+    const uploadData = new FormData();
+    uploadData.append("file", file); // Must match backend 'file'
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.post(`${API_URL}/api/upload`, uploadData, {
+        headers: { 
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      // Update State
+      setFormData({ ...formData, profilePic: res.data.url });
+      showToast("Profile Picture Uploaded!");
+    } catch (error) {
+      console.error("Upload Error:", error);
+      const msg = error.response?.data?.message || "Upload failed";
+      showToast(`Error: ${msg}`);
+    } finally {
+      setUploadingProfilePic(false);
+    }
+  };
+
+  // --- 2. HANDLE PROJECT IMAGE UPLOAD ---
+  const handleProjectImageUpload = async (e, index) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast("File is too large. Max limit is 5MB.");
+      return;
+    }
+
+    setUploadingProjIndex(index);
+    const uploadData = new FormData();
+    uploadData.append("file", file); // Must match backend 'file'
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.post(`${API_URL}/api/upload`, uploadData, {
+        headers: { 
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      updateProject(index, 'image', res.data.url);
+      showToast("Project Image Uploaded!");
+    } catch (error) {
+      console.error("Upload Error:", error);
+      const msg = error.response?.data?.message || "Upload failed";
+      showToast(`Error: ${msg}`);
+    } finally {
+      setUploadingProjIndex(null);
+    }
   };
 
   const handleShare = async () => {
@@ -434,6 +442,7 @@ function ProfileManager() {
       <AnimatePresence>{toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage(null)} />}</AnimatePresence>
 
       <div className="max-w-6xl mx-auto px-3 md:px-6 pb-20 relative z-10 pt-4">
+        {/* ... [View Mode Logic - Omitted for brevity, kept exactly as before] ... */}
         {isProfileEmpty && !isEditing ? (
             <EmptyProfileView username={profile.username} onStart={() => setIsEditing(true)} />
         ) : !isEditing ? (
@@ -447,6 +456,7 @@ function ProfileManager() {
                          {renderAvatar(profile.profilePic, profile.fullName)}
                       </div>
                    </div>
+                   {/* ... rest of View Mode ... */}
                    <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4 text-slate-900 dark:text-white">{profile.fullName}</h1>
                    <p className="text-xl font-medium mb-6 px-4 py-1 rounded-full border bg-blue-50 border-slate-200 text-blue-600 dark:bg-purple-500/10 dark:border-white/10 dark:text-purple-400">{profile.headline}</p>
                    <p className="text-lg mb-8 leading-relaxed whitespace-pre-wrap text-slate-600 dark:text-gray-200">{profile.about}</p>
@@ -490,22 +500,17 @@ function ProfileManager() {
                    </div>
                 )}
 
-                {/* SKILLS - NOW WITH ICONS */}
+                {/* SKILLS */}
                 {profile.skills.length > 0 && (
                   <section id="skills" className="text-center">
-                     <h2 className="text-3xl font-bold mb-10 flex items-center justify-center gap-2 text-slate-900 dark:text-white"><FiCpu className="text-blue-600 dark:text-purple-400"/> Tech Stack</h2>
-                     <div className="flex flex-wrap justify-center gap-6">
+                      <h2 className="text-3xl font-bold mb-10 flex items-center justify-center gap-2 text-slate-900 dark:text-white"><FiCpu className="text-blue-600 dark:text-purple-400"/> Tech Stack</h2>
+                      <div className="flex flex-wrap justify-center gap-6">
                         {profile.skills.map((skill, idx) => {
                            const iconUrl = getSkillIcon(skill);
                            return (
                              <div key={idx} title={skill} className="transition-transform hover:scale-125 flex flex-col items-center">
                                 {iconUrl ? (
-                                  <img 
-                                    src={iconUrl} 
-                                    alt={skill} 
-                                    className="w-12 h-12 md:w-16 md:h-16"
-                                    onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }} 
-                                  />
+                                  <img src={iconUrl} alt={skill} className="w-12 h-12 md:w-16 md:h-16" onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }} />
                                 ) : null}
                                 <div className={`${iconUrl ? 'hidden' : 'block'} px-5 py-2 rounded-lg border font-medium cursor-default bg-white border-slate-200 text-slate-600 dark:bg-white/5 dark:border-white/10 dark:text-gray-200`}>
                                   {skill}
@@ -513,11 +518,11 @@ function ProfileManager() {
                              </div>
                            );
                         })}
-                     </div>
+                      </div>
                   </section>
                 )}
 
-                {/* PROJECTS - UPDATED WITH ICONS */}
+                {/* PROJECTS */}
                 {profile.projects.length > 0 && (
                    <section id="projects" className="scroll-mt-24">
                       <div className="flex items-center gap-3 mb-12"><div className="h-8 w-1 rounded-full bg-blue-500 dark:bg-purple-500"></div><h2 className="text-3xl font-bold text-slate-900 dark:text-white">Featured Projects</h2></div>
@@ -525,14 +530,12 @@ function ProfileManager() {
                    </section>
                 )}
 
-                {/* ACHIEVEMENTS - NEW CARD DESIGN */}
+                {/* ACHIEVEMENTS */}
                 {profile.achievements.length > 0 && (
                    <section id="badges" className="scroll-mt-24 pb-20">
                       <div className="flex items-center gap-3 mb-10"><div className="h-8 w-1 bg-yellow-500 rounded-full"></div><h2 className="text-3xl font-bold text-slate-900 dark:text-white">Key Achievements</h2></div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                         {profile.achievements.map((ach, i) => (
-                            <AchievementCard key={i} text={ach} index={i} />
-                         ))}
+                         {profile.achievements.map((ach, i) => <AchievementCard key={i} text={ach} index={i} />)}
                       </div>
                    </section>
                 )}
@@ -544,16 +547,38 @@ function ProfileManager() {
                    <div className="text-slate-600 dark:text-gray-200">Update your details below</div>
                 </div>
 
-                <div className="flex justify-center mb-8">
-                   <div className="relative group">
-                      <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-slate-200 dark:border-white/10 bg-slate-100 flex items-center justify-center">
+                {/* --- PROFILE PICTURE UPLOAD SECTION --- */}
+                <div className="flex flex-col items-center justify-center mb-8">
+                   <div className="relative group cursor-pointer w-32 h-32 mb-4">
+                      {/* Avatar Image */}
+                      <div className="w-full h-full rounded-full overflow-hidden border-4 border-slate-200 dark:border-white/10 bg-slate-100 flex items-center justify-center relative">
                          {renderAvatar(formData.profilePic, formData.fullName)}
+                         {/* Loading Overlay */}
+                         {uploadingProfilePic && (
+                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-20">
+                               <FiLoader className="text-white animate-spin" size={24}/>
+                            </div>
+                         )}
                       </div>
+                      
+                      {/* Upload Overlay Button (Hidden Input) */}
+                      <label htmlFor="profile-upload" className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer text-white font-bold z-10">
+                         <FiCamera size={24}/>
+                      </label>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        id="profile-upload" 
+                        className="hidden" 
+                        onChange={handleProfilePicUpload} 
+                      />
                    </div>
+                   
+                   {/* Fallback Text Input */}
                    <input 
-                     className="w-full max-w-md border p-2 rounded outline-none text-sm bg-white border-slate-200 text-slate-900 dark:bg-[#1e293b] dark:border-white/10 dark:text-white text-center mt-4" 
-                     placeholder="Paste Profile Picture URL (Optional)" 
-                     name="profilePic"
+                     className="w-full max-w-md border p-2 rounded outline-none text-sm bg-white border-slate-200 text-slate-900 dark:bg-[#1e293b] dark:border-white/10 dark:text-white text-center" 
+                     placeholder="Or paste Profile Picture URL" 
+                     name="profilePic" 
                      value={formData.profilePic || ""} 
                      onChange={handleChange} 
                    />
@@ -593,6 +618,7 @@ function ProfileManager() {
                         </div>
                     </div>
 
+                    {/* --- PROJECT SECTION WITH UPLOAD --- */}
                     <div className="border-t pt-8 border-slate-200 dark:border-gray-800">
                         <div className="flex justify-between items-center mb-6">
                            <h3 className="text-xl font-bold text-slate-900 dark:text-white">Projects</h3>
@@ -606,7 +632,39 @@ function ProfileManager() {
                                     <input className="w-full bg-transparent border-b p-2 font-bold text-lg outline-none border-slate-200 dark:border-white/10 text-slate-900 dark:text-white" placeholder="Project Title" value={proj.title} onChange={e=>updateProject(i, 'title', e.target.value)} />
                                     <textarea className="w-full border p-3 rounded-lg outline-none h-24 text-sm bg-white border-slate-200 text-slate-600 dark:bg-[#020617] dark:border-gray-700 dark:text-gray-300" placeholder="Description" value={proj.description} onChange={e=>updateProject(i, 'description', e.target.value)} />
                                     <input className="w-full border p-3 rounded-lg outline-none text-sm bg-white border-slate-200 text-slate-600 dark:bg-[#020617] dark:border-gray-700 dark:text-gray-300" placeholder="Tech Stack (comma sep)" value={proj.techStack} onChange={e=>updateProject(i, 'techStack', e.target.value)} />
-                                    <input className="w-full border p-3 rounded-lg outline-none text-sm bg-white border-slate-200 text-slate-600 dark:bg-[#020617] dark:border-gray-700 dark:text-gray-300" placeholder="Cover Image URL (Optional)" value={proj.image || ""} onChange={e=>updateProject(i, 'image', e.target.value)} />
+                                    
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex-1 relative">
+                                            <input 
+                                                className="w-full border p-3 rounded-lg outline-none text-sm bg-white border-slate-200 text-slate-600 dark:bg-[#020617] dark:border-gray-700 dark:text-gray-300 pr-10" 
+                                                placeholder="Cover Image URL (Upload or Paste Link)" 
+                                                value={proj.image || ""} 
+                                                onChange={e=>updateProject(i, 'image', e.target.value)} 
+                                            />
+                                            {/* Small preview of existing image */}
+                                            {proj.image && (
+                                                <img src={proj.image} alt="Preview" className="absolute right-2 top-2 h-8 w-8 rounded object-cover border border-white/20" />
+                                            )}
+                                        </div>
+                                        
+                                        {/* UPLOAD BUTTON */}
+                                        <div className="relative">
+                                            <input 
+                                                type="file" 
+                                                accept="image/*"
+                                                className="hidden"
+                                                id={`proj-img-${i}`}
+                                                onChange={(e) => handleProjectImageUpload(e, i)}
+                                            />
+                                            <label 
+                                                htmlFor={`proj-img-${i}`}
+                                                className={`flex items-center justify-center p-3 rounded-lg cursor-pointer transition-all ${uploadingProjIndex === i ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 dark:bg-purple-600 dark:hover:bg-purple-700'} text-white shadow-md`}
+                                                title="Upload Image"
+                                            >
+                                                {uploadingProjIndex === i ? <FiLoader className="animate-spin" /> : <FiUploadCloud size={20} />}
+                                            </label>
+                                        </div>
+                                    </div>
                                     
                                     <div className="flex gap-4">
                                         <input className="w-1/2 border p-3 rounded-lg outline-none text-sm bg-white border-slate-200 text-slate-600 dark:bg-[#020617] dark:border-gray-700 dark:text-gray-300" placeholder="GitHub URL" value={proj.githubLink} onChange={e=>updateProject(i, 'githubLink', e.target.value)} />
@@ -616,6 +674,7 @@ function ProfileManager() {
                             ))}
                         </div>
                     </div>
+
                     <div className="border-t pt-8 border-slate-200 dark:border-gray-800">
                          <label className="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Achievements (One per line)</label>
                          <textarea className="w-full border p-3 rounded-xl outline-none h-40 bg-white border-slate-200 text-slate-900 dark:bg-[#1e293b] dark:border-white/10 dark:text-white" value={(formData.achievements || []).join('\n')} onChange={e => setFormData({ ...formData, achievements: e.target.value.split('\n') })} />

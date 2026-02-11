@@ -1,11 +1,15 @@
 import mongoose from "mongoose";
 
+
 const ProjectSchema = new mongoose.Schema({
   title: { type: String, default: "" },
   description: { type: String, default: "" },
   techStack: { type: [String], default: [] },
   githubLink: { type: String, default: "" },
-  liveLink: { type: String, default: "" }
+  liveLink: { type: String, default: "" },
+  
+
+  image: { type: String, default: "" } 
 }, { _id: false }); 
 
 const ResumeSchema = new mongoose.Schema({
@@ -13,7 +17,7 @@ const ResumeSchema = new mongoose.Schema({
   link: { type: String, default: "" }
 }, { _id: false });
 
-// 2. Main Profile Schema
+
 const UserProfileSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -29,8 +33,7 @@ const UserProfileSchema = new mongoose.Schema({
   email: { type: String, default: "" },
   linkedinProfile: { type: String, default: "" }, 
   portfolioUrl: { type: String, default: "" },    
-  
-
+  profilePic: { type: String, default: "" }, 
   githubUsername: { type: String, default: "" },
   leetcodeUsername: { type: String, default: "" },
 

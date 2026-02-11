@@ -5,7 +5,7 @@ const API_KEY = process.env.GEMINI_API_KEY;
 
 async function getModels() {
   if (!API_KEY) {
-    console.error("❌ Error: GEMINI_API_KEY is missing in .env");
+    console.error("Error: GEMINI_API_KEY is missing in .env");
     return;
   }
 
@@ -17,7 +17,7 @@ async function getModels() {
     const data = await response.json();
 
     if (data.error) {
-      console.error("❌ API Error:", data.error.message);
+      console.error(" API Error:", data.error.message);
       return;
     }
 
@@ -37,7 +37,7 @@ async function getModels() {
     });
     
     console.log("-----------------------------------");
-    console.log("👉 Please pick one of the names above for your aiRoutes.js file.");
+    console.log(" Please pick one of the names above for your aiRoutes.js file.");
 
   } catch (error) {
     console.error("❌ Network Error:", error.message);

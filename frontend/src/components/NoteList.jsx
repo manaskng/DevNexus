@@ -16,7 +16,7 @@ function NoteList() {
   const [loading, setLoading] = useState(true);
   const [mobileView, setMobileView] = useState("list"); 
   
-  const location = useLocation(); // 👈 2. Get the navigation state
+  const location = useLocation(); 
   const API_URL = import.meta.env.VITE_API_URL;
 
   const fetchNotes = async () => {
@@ -29,7 +29,7 @@ function NoteList() {
       const sorted = data.sort((a, b) => (b.isPinned - a.isPinned) || new Date(b.updatedAt) - new Date(a.updatedAt));
       setNotes(sorted);
       
-      // 👈 3. INTELLIGENT SELECTION LOGIC
+     
       // Check if we came from Search
       if (location.state?.selectedId) {
         const searchedNote = sorted.find(n => n._id === location.state.selectedId);
@@ -52,7 +52,7 @@ function NoteList() {
     }
   };
 
-  useEffect(() => { fetchNotes(); }, [location.state]); // 👈 4. Re-run if location state changes
+  useEffect(() => { fetchNotes(); }, [location.state]); 
 
   // --- HANDLERS ---
   const handleNoteSelect = (note) => {

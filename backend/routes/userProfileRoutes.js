@@ -5,7 +5,7 @@ import { protect } from "../middlewares/auth.js";
 
 const router = express.Router();
 
-//  GET Profile 
+// GET Profile 
 router.get("/", protect, async (req, res) => {
     try {
         let profile = await UserProfile.findOne({ user: req.user._id });
@@ -27,13 +27,15 @@ router.get("/", protect, async (req, res) => {
     }
 });
 
-//  UPDATE Profile 
+// UPDATE Profile 
 router.put("/", protect, async (req, res) => {
     try {
+        
         const { 
             fullName, headline, about, location, email, 
             linkedinProfile, portfolioUrl, githubUsername, leetcodeUsername,
-            skills, achievements, projects, resumes 
+            skills, achievements, projects, resumes,
+            profilePic 
         } = req.body;
 
         
@@ -43,7 +45,9 @@ router.put("/", protect, async (req, res) => {
                 $set: { 
                     fullName, headline, about, location, email,
                     linkedinProfile, portfolioUrl, githubUsername, leetcodeUsername,
-                    skills, achievements, projects, resumes
+                    skills, achievements, projects, resumes,
+                    // 👇 2. ADD profilePic HERE SO IT GETS SAVED
+                    profilePic
                 }
             },
             { new: true, upsert: true, setDefaultsOnInsert: true }

@@ -7,7 +7,7 @@ import {
 } from "react-icons/fi";
 import { motion } from "framer-motion";
 
-
+// --- HELPER: Normalize Skills for Icons ---
 const getSkillIcon = (skillName) => {
   if (!skillName) return null;
   const clean = skillName.toLowerCase().trim();
@@ -32,22 +32,29 @@ const getSkillIcon = (skillName) => {
     'gitlab': 'gitlab', 'linux': 'linux', 'ubuntu': 'ubuntu', 'bash': 'bash', 'jenkins': 'jenkins', 'grafana': 'grafana',
     'postman': 'postman', 'vscode': 'vscode', 'figma': 'figma', 'blender': 'blender', 'unity': 'unity', 'unreal': 'unreal'
   };
-  const directSlug = clean.replace(/[^a-z0-9]/g, '');
+
   if (map[clean]) return `https://skillicons.dev/icons?i=${map[clean]}`;
+  const directSlug = clean.replace(/[^a-z0-9]/g, '');
   if (map[directSlug]) return `https://skillicons.dev/icons?i=${map[directSlug]}`;
   const allSlugs = Object.values(map);
   if (allSlugs.includes(clean)) return `https://skillicons.dev/icons?i=${clean}`;
   return null;
 };
 
+// --- HELPER: Get Project Image (Cloudinary Priority) ---
 const getProjectImage = (project) => {
+  // 1. Priority: Uploaded Cloudinary Image
   if (project.image && project.image.trim() !== "") return project.image;
+  
+  // 2. Fallback: GitHub OpenGraph
   if (project.githubLink && project.githubLink.includes("github.com")) {
     try {
       const urlParts = new URL(project.githubLink).pathname.split("/").filter(Boolean);
       if (urlParts.length >= 2) return `https://opengraph.githubassets.com/1/${urlParts[0]}/${urlParts[1]}`;
     } catch (e) {}
   }
+  
+  // 3. Fallback: Placeholder
   return "https://via.placeholder.com/800x400/0f172a/94a3b8?text=Project+Code";
 };
 
@@ -86,7 +93,6 @@ const HighImpactProjectCard = ({ project, index }) => {
              <p className="text-slate-600 dark:text-gray-200 text-sm leading-relaxed line-clamp-4">{project.description}</p>
           </div>
           
-          {/* Tech Stack Icons */}
           <div className="flex flex-wrap gap-3 mb-8">
              {project.techStack && project.techStack.map((tech, i) => {
                 const iconUrl = getSkillIcon(tech);
@@ -122,7 +128,6 @@ const HighImpactProjectCard = ({ project, index }) => {
   );
 };
 
-// --- COMPONENT: Achievement Card ---
 const AchievementCard = ({ text, index }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
@@ -218,7 +223,7 @@ function PublicProfile() {
                </div>
             </section>
 
-            {/* STATS - Using the Stable API */}
+            {/* STATS */}
             {(profile.githubUsername || profile.leetcodeUsername) && (
                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto mb-16">
                  {profile.githubUsername && (
@@ -234,7 +239,7 @@ function PublicProfile() {
                </div>
             )}
 
-            {/* SKILLS - Using Icons */}
+            {/* SKILLS */}
             {profile.skills && profile.skills.length > 0 && (
               <section className="text-center">
                   <h2 className="text-3xl font-bold mb-10 flex items-center justify-center gap-2 text-slate-900 dark:text-white"><FiCpu className="text-blue-600 dark:text-purple-400"/> Tech Stack</h2>
@@ -261,7 +266,7 @@ function PublicProfile() {
               </section>
             )}
 
-            {/* PROJECTS - Using Animated Card */}
+            {/* PROJECTS */}
             {profile.projects && profile.projects.length > 0 && (
                <section>
                   <div className="flex items-center gap-3 mb-12">
@@ -274,7 +279,7 @@ function PublicProfile() {
                </section>
             )}
 
-            {/* ACHIEVEMENTS - Using New Milestone Cards */}
+            {/* ACHIEVEMENTS */}
             {profile.achievements && profile.achievements.length > 0 && (
                <section className="pb-20">
                   <div className="flex items-center gap-3 mb-10">
