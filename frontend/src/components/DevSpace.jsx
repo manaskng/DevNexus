@@ -242,7 +242,7 @@ function DevSpace() {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/ai/process`, { code, action: actionType }, { headers: { Authorization: `Bearer ${token}` } });
       setAiResponse(res.data.result);
     } catch (error) {
-      setAiResponse(`**System Alert**\n\nThe Neural Engine is currently calibrating. Please try again.`);
+      setAiResponse(`**System Alert**\n\nAI Assistant is currently calibrating. Please try again.`);
     } finally {
       setIsAiLoading(false);
     }
@@ -299,7 +299,7 @@ function DevSpace() {
                <FiCpu className="text-white drop-shadow-md" size={28} />
              </div>
              <h1 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 tracking-tight mb-1 md:mb-2">DevSpace</h1>
-             <p className="text-slate-400 font-medium text-xs md:text-sm">Collaborative Neural Environment</p>
+             <p className="text-slate-400 font-medium text-xs md:text-sm">Collaborative Workspace</p>
            </div>
 
            {/* Input: Identity - Reduced margin */}
@@ -357,7 +357,7 @@ function DevSpace() {
         </div>
         
         {/* Footer Info - Relative position for flow */}
-        <p className="mt-8 relative md:absolute md:bottom-6 text-slate-600 text-xs font-medium opacity-60 hover:opacity-100 transition-opacity cursor-default text-center">DevNexus v2.0 • Secured by Neural Shield</p>
+        <p className="mt-8 relative md:absolute md:bottom-6 text-slate-600 text-xs font-medium opacity-60 hover:opacity-100 transition-opacity cursor-default text-center">DevNexus v3.0 • Secured Workspace</p>
       </div>
     );
   }
@@ -434,8 +434,8 @@ function DevSpace() {
 
                       {isAiLoading && (
                         <div className="mt-4 pt-4 border-t border-white/10 animate-pulse">
-                           <div className="flex items-center gap-2 text-blue-400 font-bold text-xs uppercase tracking-wider mb-2"><FiLoader className="animate-spin" /> Neural Engine Active</div>
-                           <p className="text-slate-500 text-xs italic">Initializing Neural Network...</p>
+                           <div className="flex items-center gap-2 text-blue-400 font-bold text-xs uppercase tracking-wider mb-2"><FiLoader className="animate-spin" /> AI Assistant Active</div>
+                           <p className="text-slate-500 text-xs italic">Analyzing your code...</p>
                         </div>
                       )}
 

@@ -189,7 +189,7 @@ function LandingPage() {
 
             <FeatureCard 
               icon={FiZap} 
-              title="Neural AI Engine" 
+              title="AI Code Assistant" 
               desc="Stuck on logic? Ask the built-in Gemini AI to explain complex code or refactor your algorithms instantly within the editor." 
               color="purple"
             />

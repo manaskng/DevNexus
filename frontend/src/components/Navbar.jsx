@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Added useNavigate
 import axios from 'axios';
-import { FiSearch, FiFileText, FiCode, FiX, FiLoader, FiCpu, FiLogOut, FiSun, FiMoon } from 'react-icons/fi';
+import { FiSearch, FiFileText, FiCode, FiX, FiLoader, FiCpu, FiLogOut, FiSun, FiMoon, FiCalendar } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
+import ContestWidget from './ContestWidget';
 
 function Navbar({ user, setUser }) {
   const { theme, toggleTheme } = useTheme();
@@ -11,6 +12,7 @@ function Navbar({ user, setUser }) {
   const [results, setResults] = useState({ notes: [], snippets: [] });
   const [showResults, setShowResults] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isContestOpen, setIsContestOpen] = useState(false);
   
   const searchRef = useRef(null);
   const navigate = useNavigate(); 
@@ -99,8 +101,14 @@ function Navbar({ user, setUser }) {
                     onChange={(e) => setQuery(e.target.value)}
                     onFocus={() => query.length > 1 && setShowResults(true)}
                     placeholder="Search docs, code..."
-                    className="w-full pl-10 pr-10 py-2 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white dark:focus:bg-white/10 transition-all placeholder-slate-500 dark:placeholder-gray-500 text-sm"
+                    className="w-full pl-10 pr-16 py-2 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white dark:focus:bg-white/10 transition-all placeholder-slate-500 dark:placeholder-gray-500 text-sm"
                   />
+                  
+                  {!query && (
+                    <kbd className="absolute right-3 top-2 text-[9px] font-mono font-bold text-slate-400 bg-slate-200/80 dark:bg-white/10 px-1.5 py-1 rounded border border-slate-300 dark:border-white/10 pointer-events-none">
+                      ⌘K
+                    </kbd>
+                  )}
                   
                   {query && (
                     <button onClick={()=>{setQuery(""); setShowResults(false)}} className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-white">
@@ -165,7 +173,20 @@ function Navbar({ user, setUser }) {
               </div>
 
               {/* 3. RIGHT SIDE */}
-              <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+              <div className="flex items-center gap-2 sm:gap-4 shrink-0 relative">
+                
+                <button 
+                  onClick={() => setIsContestOpen(!isContestOpen)}
+                  className={`p-2 rounded-lg transition-all ${isContestOpen ? 'bg-blue-50 text-blue-600 dark:bg-dev-accent/20 dark:text-dev-accent' : 'text-slate-500 hover:bg-slate-100 dark:text-gray-400 dark:hover:bg-white/5'}`}
+                  title="Contest Radar"
+                >
+                  <FiCalendar size={20} />
+                </button>
+
+                <AnimatePresence>
+                  {isContestOpen && <ContestWidget onClose={() => setIsContestOpen(false)} />}
+                </AnimatePresence>
+
                 <button 
                   onClick={toggleTheme} 
                   className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:text-gray-400 dark:hover:bg-white/5 transition-all"

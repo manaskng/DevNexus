@@ -21,6 +21,8 @@ import profileLinkRoutes from "./routes/profileLinkRoutes.js";
 import searchRoutes from "./routes/searchRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
 import compilerRoutes from "./routes/compilerRoutes.js";
+import contestRoutes from "./routes/contestRoutes.js";
+import { rateLimiter } from "./middlewares/rateLimiter.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -77,8 +79,9 @@ app.use("/api/snippets", codeSnippetRoutes);
 app.use("/api/profiles", profileLinkRoutes);
 app.use("/api/user-profile", userProfileRoutes); 
 app.use("/api/search", searchRoutes);
-app.use("/api/ai", aiRoutes);
-app.use("/api/compiler", compilerRoutes);
+app.use("/api/ai", rateLimiter({ maxRequests: 10, windowMs: 60000, prefix: "rl:ai" }), aiRoutes);
+app.use("/api/compiler", rateLimiter({ maxRequests: 15, windowMs: 60000, prefix: "rl:compiler" }), compilerRoutes);
+app.use("/api/contests", contestRoutes);
 
 //cloudinary upload endpoint
 app.post("/api/upload", upload.single("file"), async (req, res) => {

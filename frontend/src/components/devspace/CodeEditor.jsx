@@ -91,7 +91,7 @@ const CodeEditor = ({ code, language, onChange, theme = "vs-dark" }) => {
           loading={
             <div className="h-full flex flex-col items-center justify-center text-slate-400 gap-2 bg-[#1e1e1e]">
                <FiLoader className="animate-spin text-2xl" /> 
-               <span className="text-xs font-mono">Initializing Neural Engine...</span>
+               <span className="text-xs font-mono">Initializing Editor...</span>
             </div>
           }
         />

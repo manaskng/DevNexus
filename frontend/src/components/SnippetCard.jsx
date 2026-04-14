@@ -34,7 +34,7 @@ function SnippetCard({ snippet, onEdit, onDelete, isExpanded, onToggleExpand }) 
   };
 
   return (
-    <div className={`bg-white dark:bg-[#1e1e1e] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full group overflow-hidden relative ${isExpanded ? 'ring-2 ring-blue-500/20' : ''}`}>
+    <div className={`bg-white dark:bg-[#0f172a] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-black/20 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full group overflow-hidden relative ${isExpanded ? 'ring-2 ring-blue-500' : ''}`}>
       
       {/* Header Bar */}
       <div className="bg-gray-900 px-3 py-1.5 flex justify-between items-center select-none shrink-0">

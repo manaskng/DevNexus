@@ -105,10 +105,10 @@ function NoteList() {
     <div 
       onClick={() => handleNoteSelect(note)}
       className={`
-        group flex items-center justify-between p-3.5 mb-2 rounded-xl cursor-pointer transition-all border
+        group flex items-center justify-between p-3.5 mb-2 rounded-xl cursor-pointer transition-all duration-300 border
         ${selectedNote?._id === note._id 
-          ? 'bg-white border-indigo-200 shadow-md shadow-indigo-500/5 dark:bg-indigo-900/20 dark:border-indigo-500/30' 
-          : 'bg-transparent border-transparent hover:bg-white/50 dark:hover:bg-white/5'
+          ? 'bg-white border-dev-accent/30 shadow-md shadow-dev-accent/10 dark:bg-dev-card/80 dark:border-dev-accent/50 box-border' 
+          : 'bg-transparent border-transparent hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-500/5 dark:hover:shadow-black/20 hover:bg-white/50 dark:hover:bg-white/5 box-border'
         }
       `}
     >
@@ -139,17 +139,18 @@ function NoteList() {
   if (!loading && notes.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full w-full bg-slate-50 dark:bg-[#020617] animate-fade-in p-6">
-        <div className="max-w-md w-full bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/5 rounded-3xl p-8 text-center shadow-xl">
-          <div className="w-20 h-20 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <BsJournalBookmarkFill size={32} className="text-indigo-500" />
+        <div className="max-w-md w-full bg-white dark:bg-dev-card border border-slate-200 dark:border-dev-border rounded-3xl p-8 text-center shadow-xl relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-dev-accent to-fuchsia-500 opacity-50"></div>
+          <div className="w-20 h-20 bg-blue-50 dark:bg-dev-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner border border-blue-100 dark:border-dev-accent/20">
+            <BsJournalBookmarkFill size={32} className="text-dev-accent" />
           </div>
-          <h2 className="text-2xl font-black text-slate-800 dark:text-white mb-2">Documentation Zero</h2>
-          <p className="text-slate-500 dark:text-slate-400 mb-8 text-sm leading-relaxed">
+          <h2 className="text-2xl font-black text-slate-800 dark:text-white mb-2 tracking-tight">Documentation Zero</h2>
+          <p className="text-slate-500 dark:text-gray-400 mb-8 text-sm leading-relaxed">
             Your repository is empty. Create your first research paper, project roadmap, or code snippet collection to get started.
           </p>
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 transition-all active:scale-95 flex items-center justify-center gap-2"
+            className="w-full py-3.5 bg-dev-accent hover:brightness-110 text-white font-bold rounded-xl shadow-lg shadow-dev-accent/20 transition-all active:scale-95 flex items-center justify-center gap-2"
           >
             <FiPlus size={18} /> Create New Document
           </button>

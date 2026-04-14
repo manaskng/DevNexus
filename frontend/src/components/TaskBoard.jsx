@@ -150,9 +150,10 @@ function TaskBoard() {
                  <FiZap className="text-indigo-500" size={24}/> Syncing objectives...
              </div>
         ) : tasks.length === 0 ? (
-           <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} className="text-center py-20 px-10 bg-slate-50 dark:bg-white/5 rounded-3xl border-2 border-dashed border-slate-200 dark:border-white/10">
+           <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} className="text-center py-20 px-10 bg-slate-50 dark:bg-dev-card rounded-3xl border border-dashed border-slate-200 dark:border-dev-border relative overflow-hidden">
+             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-dev-accent to-fuchsia-500 opacity-50"></div>
              <h3 className="text-xl font-bold text-slate-700 dark:text-white mb-2">All Systems Clear</h3>
-             <p className="text-slate-500 dark:text-slate-400">Your task board is empty. Add a new objective to get started.</p>
+             <p className="text-slate-500 dark:text-gray-400">Your task board is empty. Add a new objective to get started.</p>
            </motion.div>
         ) : (
            <motion.ul 
@@ -200,7 +201,7 @@ const TaskItem = ({ task, toggleTask, deleteTask }) => {
           rounded-2xl border shadow-sm backdrop-blur-sm transition-all duration-300
           ${isDone 
             ? 'bg-slate-50/50 dark:bg-white/5 border-slate-200 dark:border-white/5 opacity-75 scale-[0.99] hover:opacity-100' 
-            : 'bg-white dark:bg-[#1e293b]/80 border-indigo-100/50 dark:border-indigo-500/20 hover:border-indigo-300 dark:hover:border-indigo-400 hover:shadow-md shadow-indigo-100/50 dark:shadow-none'
+            : 'bg-white dark:bg-dev-card/80 border-indigo-100/50 dark:border-dev-accent/20 hover:border-indigo-300 dark:hover:border-dev-accent/40 hover:shadow-md shadow-indigo-100/50 dark:shadow-none'
           }
         `}
       >

@@ -61,7 +61,7 @@ router.post("/process", protect, async (req, res) => {
   } catch (error) {
     console.error("--- GEMINI AI CRITICAL FAILURE ---");
     console.error(error); 
-    res.status(500).json({ message: "Neural Engine failed to process request." });
+    res.status(500).json({ message: "AI processing failed to process request." });
   }
 });
 

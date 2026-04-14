@@ -1,32 +1,64 @@
-import React, { useState } from "react";
-import { FiFileText, FiCode, FiUser, FiGrid, FiLayers, FiCpu } from "react-icons/fi";
-import NoteList from "./NoteList";
-import SnippetLibrary from "./SnippetLibrary"; 
-import ProfileManager from "./ProfileManager"; 
-import TaskBoard from "./TaskBoard"; 
-import DevSpace from "./DevSpace"; 
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  FiHome, FiFileText, FiCode, FiUser, FiGrid, FiLayers,
+  FiCpu, FiCalendar, FiEdit3, FiCommand
+} from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "../context/ThemeContext";
 
-const NavItem = ({ id, icon: Icon, label, activeTab, setActiveTab }) => {
+// ── Existing Modules (renamed imports for clarity) ──
+import NoteList from "./NoteList";           // DevDocs
+import SnippetLibrary from "./SnippetLibrary"; // Code Vault
+import ProfileManager from "./ProfileManager";
+import TaskBoard from "./TaskBoard";
+import DevSpace from "./DevSpace";
+
+// ── New Modules ──
+import DashboardHome from "./DashboardHome";
+
+import CommandPalette from "./CommandPalette";
+import ScratchPad from "./ScratchPad";
+import FocusTimer from "./FocusTimer";
+
+// ──────────────────────────────────────────────────────
+// Sidebar Nav Item
+// ──────────────────────────────────────────────────────
+const NavItem = ({ id, icon: Icon, label, activeTab, setActiveTab, badge }) => {
   const isActive = activeTab === id;
   return (
     <button
       onClick={() => setActiveTab(id)}
       className={`
         w-full flex items-center gap-4 px-3 py-3 rounded-xl transition-all duration-200 group relative
-        ${isActive 
-          ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" 
+        ${isActive
+          ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10"
           : "text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-blue-600 dark:hover:text-blue-400"
         }
       `}
     >
+      {isActive && (
+        <motion.div 
+          layoutId="sidebarActive"
+          className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-blue-500 rounded-r-full shadow-[0_0_10px_rgba(59,130,246,0.6)]"
+        />
+      )}
       <div className="min-w-[24px] flex justify-center">
-        <Icon size={20} className={isActive ? "animate-pulse-slow" : ""} />
+        <Icon size={20} />
       </div>
-      
-      <span className="font-medium text-sm whitespace-nowrap overflow-hidden hidden lg:block">
+
+      <span className="font-medium text-sm whitespace-nowrap overflow-hidden hidden lg:block flex-1 text-left">
         {label}
       </span>
 
+      {badge && (
+        <span className={`hidden lg:inline text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
+          isActive ? "bg-white/20 text-white" : "bg-slate-100 dark:bg-white/10 text-slate-400"
+        }`}>
+          {badge}
+        </span>
+      )}
+
+      {/* Tooltip for collapsed sidebar */}
       <div className="absolute left-16 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 lg:hidden pointer-events-none transition-opacity z-50 whitespace-nowrap shadow-md">
         {label}
       </div>
@@ -34,76 +66,191 @@ const NavItem = ({ id, icon: Icon, label, activeTab, setActiveTab }) => {
   );
 };
 
+// ──────────────────────────────────────────────────────
+// Dashboard — Main workspace shell
+// ──────────────────────────────────────────────────────
 function Dashboard() {
-  const [activeTab, setActiveTab] = useState("notes");
+  const [activeTab, setActiveTab] = useState("home");
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isScratchPadOpen, setIsScratchPadOpen] = useState(false);
+  const { toggleTheme } = useTheme();
+
+  // ── Global Keyboard Shortcuts ──
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Ctrl+K or Cmd+K → Command Palette
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        setIsCommandPaletteOpen((prev) => !prev);
+      }
+      // Ctrl+. or Cmd+. → Scratch Pad
+      if ((e.ctrlKey || e.metaKey) && e.key === ".") {
+        e.preventDefault();
+        setIsScratchPadOpen((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // ── Command Palette Action Handler ──
+  const handleCommandAction = useCallback((actionId) => {
+    switch (actionId) {
+      // Navigation
+      case "nav-home":      setActiveTab("home"); break;
+      case "nav-docs":      setActiveTab("docs"); break;
+      case "nav-devspace":  setActiveTab("devspace"); break;
+      case "nav-snippets":  setActiveTab("snippets"); break;
+      case "nav-tasks":     setActiveTab("tasks"); break;
+      case "nav-profile":   setActiveTab("profiles"); break;
+      // Create — navigate to the relevant tab (the tab handles creation)
+      case "create-doc":     setActiveTab("docs"); break;
+      case "create-snippet": setActiveTab("snippets"); break;
+      case "create-task":    setActiveTab("tasks"); break;
+      // System
+      case "toggle-theme":  toggleTheme(); break;
+      case "open-scratch":  setIsScratchPadOpen(true); break;
+      default: break;
+    }
+  }, [toggleTheme]);
 
   return (
     <div className="flex h-full w-full overflow-hidden bg-slate-50 dark:bg-[#020617] transition-colors duration-300">
-      
-      {/* SIDEBAR */}
+
+      {/* ════════════════════════════════════════════════ */}
+      {/* DESKTOP SIDEBAR                                 */}
+      {/* ════════════════════════════════════════════════ */}
       <aside className="hidden md:flex flex-col w-[72px] lg:w-64 h-full border-r border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b1121] transition-all duration-300 ease-in-out z-20 shrink-0">
+
+        {/* Brand */}
         <div className="h-16 flex items-center justify-center lg:justify-start lg:px-6 border-b border-slate-100 dark:border-white/5">
-           <FiGrid className="text-blue-600 lg:mr-3" size={24} />
-           <span className="font-bold text-slate-800 dark:text-white hidden lg:block">Workspace</span>
+          <FiGrid className="text-blue-600 lg:mr-3" size={24} />
+          <span className="font-bold text-slate-800 dark:text-white hidden lg:block">Workspace</span>
         </div>
 
-        <div className="flex-1 py-6 px-3 space-y-2 overflow-y-auto custom-scrollbar">
-          <NavItem id="notes" icon={FiFileText} label="DevDocs" activeTab={activeTab} setActiveTab={setActiveTab} />
-          <NavItem id="devspace" icon={FiCpu} label="DevSpace (Live)" activeTab={activeTab} setActiveTab={setActiveTab} />
-          <NavItem id="snippets" icon={FiCode} label="Code Library" activeTab={activeTab} setActiveTab={setActiveTab} />
-          <NavItem id="tasks" icon={FiLayers} label="Task Board" activeTab={activeTab} setActiveTab={setActiveTab} />
-          <div className="my-4 border-t border-slate-100 dark:border-white/5 mx-2"></div>
-          <NavItem id="profiles" icon={FiUser} label="Profile Manager" activeTab={activeTab} setActiveTab={setActiveTab} />
+        {/* Nav Items */}
+        <div className="flex-1 py-6 px-3 space-y-1.5 overflow-y-auto custom-scrollbar">
+          <NavItem id="home"     icon={FiHome}     label="Home"           activeTab={activeTab} setActiveTab={setActiveTab} />
+
+          <div className="my-3 border-t border-slate-100 dark:border-white/5 mx-2" />
+
+          <NavItem id="docs"     icon={FiFileText} label="DevDocs"        activeTab={activeTab} setActiveTab={setActiveTab} />
+          <NavItem id="devspace" icon={FiCpu}      label="DevSpace"       activeTab={activeTab} setActiveTab={setActiveTab} badge="Live" />
+          <NavItem id="snippets" icon={FiCode}     label="Code Vault"     activeTab={activeTab} setActiveTab={setActiveTab} />
+          <NavItem id="tasks"    icon={FiLayers}   label="Task Board"     activeTab={activeTab} setActiveTab={setActiveTab} />
+
+          <div className="my-3 border-t border-slate-100 dark:border-white/5 mx-2" />
+
+          <NavItem id="profiles" icon={FiUser}     label="Profile"        activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
 
-        <div className="p-4 text-center lg:text-left text-[10px] text-slate-400 dark:text-gray-600 border-t border-slate-100 dark:border-white/5">
-           <span className="hidden lg:inline">DevNexus v2.0</span>
+        {/* Sidebar Footer — Focus Timer + Scratch Pad shortcut */}
+        <div className="border-t border-slate-100 dark:border-white/5">
+          {/* Focus Timer Widget */}
+          <div className="hidden lg:block">
+            <FocusTimer />
+          </div>
+
+          {/* Keyboard Shortcut Hints */}
+          <div className="p-3 hidden lg:flex flex-col gap-1.5 border-t border-slate-100 dark:border-white/5">
+            <button
+              onClick={() => setIsCommandPaletteOpen(true)}
+              className="flex items-center justify-between px-2 py-1.5 rounded-lg text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-600 dark:hover:text-slate-300 transition-colors text-xs"
+            >
+              <span className="flex items-center gap-2"><FiCommand size={12} /> Commands</span>
+              <kbd className="text-[9px] font-mono bg-slate-100 dark:bg-white/5 px-1.5 py-0.5 rounded border border-slate-200 dark:border-white/10">⌘K</kbd>
+            </button>
+            <button
+              onClick={() => setIsScratchPadOpen(true)}
+              className="flex items-center justify-between px-2 py-1.5 rounded-lg text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-600 dark:hover:text-slate-300 transition-colors text-xs"
+            >
+              <span className="flex items-center gap-2"><FiEdit3 size={12} /> Scratch Pad</span>
+              <kbd className="text-[9px] font-mono bg-slate-100 dark:bg-white/5 px-1.5 py-0.5 rounded border border-slate-200 dark:border-white/10">⌘.</kbd>
+            </button>
+          </div>
+
+          <div className="p-3 text-center lg:text-left text-[10px] text-slate-400 dark:text-gray-600 border-t border-slate-100 dark:border-white/5">
+            <span className="hidden lg:inline">DevNexus v3.0</span>
+          </div>
         </div>
       </aside>
-      
-     
+
+      {/* ════════════════════════════════════════════════ */}
+      {/* MAIN CONTENT AREA                               */}
+      {/* ════════════════════════════════════════════════ */}
       <main className={`
-        flex-1 h-full relative 
+        flex-1 h-full relative
         ${activeTab === 'devspace' ? 'overflow-hidden' : 'overflow-y-auto custom-scrollbar'}
       `}>
         <div className={`
-          mx-auto w-full transition-all duration-300
-          ${activeTab === 'devspace' 
-            ? 'h-full max-w-full p-0' // DevSpace Mode: Full height, no padding
-            : 'min-h-full max-w-[1600px] p-4 lg:p-8 pb-24 md:pb-8' // Standard Mode: Padding & scrolling
+          mx-auto w-full transition-all duration-300 relative
+          ${activeTab === 'devspace'
+            ? 'h-full max-w-full p-0'
+            : activeTab === 'home'
+              ? 'min-h-full max-w-full pb-24 md:pb-8'
+              : 'min-h-full max-w-[1600px] p-4 lg:p-8 pb-24 md:pb-8'
           }
         `}>
-           {activeTab === "notes" && <NoteList />}
-           {activeTab === "devspace" && <DevSpace />}
-           {activeTab === "snippets" && <SnippetLibrary />}
-           {activeTab === "profiles" && <ProfileManager />}
-           {activeTab === "tasks" && <TaskBoard />} 
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.2 }}
+              className="h-full"
+            >
+              {activeTab === "home"     && <DashboardHome setActiveTab={setActiveTab} />}
+              {activeTab === "docs"     && <NoteList />}
+              {activeTab === "devspace" && <DevSpace />}
+              {activeTab === "snippets" && <SnippetLibrary />}
+              {activeTab === "tasks"    && <TaskBoard />}
+              {activeTab === "profiles" && <ProfileManager />}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </main>
 
-      {/* MOBILE BOTTOM NAV */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-[#0b1121] border-t border-slate-200 dark:border-white/10 flex justify-around items-center px-4 z-50 pb-safe shadow-[0_-5px_20px_-5px_rgba(0,0,0,0.1)]">
-         <button onClick={() => setActiveTab("notes")} className={`p-2 rounded-xl flex flex-col items-center gap-1 ${activeTab === 'notes' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-gray-500'}`}>
-            <FiFileText size={20}/>
-            <span className="text-[10px] font-medium">Notes</span>
-         </button>
-         <button onClick={() => setActiveTab("devspace")} className={`p-2 rounded-xl flex flex-col items-center gap-1 ${activeTab === 'devspace' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-gray-500'}`}>
-            <FiCpu size={20}/>
-            <span className="text-[10px] font-medium">Space</span>
-         </button>
-         <button onClick={() => setActiveTab("snippets")} className={`p-2 rounded-xl flex flex-col items-center gap-1 ${activeTab === 'snippets' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-gray-500'}`}>
-            <FiCode size={20}/>
-            <span className="text-[10px] font-medium">Code</span>
-         </button>
-         <button onClick={() => setActiveTab("tasks")} className={`p-2 rounded-xl flex flex-col items-center gap-1 ${activeTab === 'tasks' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-gray-500'}`}>
-            <FiLayers size={20}/>
-            <span className="text-[10px] font-medium">Tasks</span>
-         </button>
-         <button onClick={() => setActiveTab("profiles")} className={`p-2 rounded-xl flex flex-col items-center gap-1 ${activeTab === 'profiles' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-gray-500'}`}>
-            <FiUser size={20}/>
-            <span className="text-[10px] font-medium">Profile</span>
-         </button>
+      {/* ════════════════════════════════════════════════ */}
+      {/* MOBILE BOTTOM NAV                               */}
+      {/* ════════════════════════════════════════════════ */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-[#0b1121] border-t border-slate-200 dark:border-white/10 flex justify-around items-center px-2 z-50 pb-safe shadow-[0_-5px_20px_-5px_rgba(0,0,0,0.1)]">
+        {[
+          { id: "home",     icon: FiHome,     label: "Home" },
+          { id: "docs",     icon: FiFileText, label: "Docs" },
+          { id: "devspace", icon: FiCpu,      label: "Space" },
+          { id: "snippets", icon: FiCode,     label: "Code" },
+          { id: "tasks",    icon: FiLayers,   label: "Tasks" },
+          { id: "profiles", icon: FiUser,     label: "Profile" },
+        ].map(({ id, icon: Icon, label }) => (
+          <button
+            key={id}
+            onClick={() => setActiveTab(id)}
+            className={`p-1.5 rounded-xl flex flex-col items-center gap-0.5 ${
+              activeTab === id
+                ? "text-blue-600 dark:text-blue-400"
+                : "text-slate-400 dark:text-gray-500"
+            }`}
+          >
+            <Icon size={18} />
+            <span className="text-[9px] font-medium">{label}</span>
+          </button>
+        ))}
       </div>
+
+      {/* ════════════════════════════════════════════════ */}
+      {/* OVERLAYS — Command Palette + Scratch Pad        */}
+      {/* ════════════════════════════════════════════════ */}
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        onAction={handleCommandAction}
+      />
+      <ScratchPad
+        isOpen={isScratchPadOpen}
+        onClose={() => setIsScratchPadOpen(false)}
+      />
 
     </div>
   );
